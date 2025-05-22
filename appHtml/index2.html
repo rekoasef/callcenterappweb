@@ -29,14 +29,18 @@
         .spinner-container { display: flex; justify-content: center; align-items: center; height: 100px; }
         .spinner { border: 4px solid rgba(0, 0, 0, 0.1); width: 36px; height: 36px; border-radius: 50%; border-left-color: #0ea5e9; animation: spin 1s ease infinite; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        .delete-button { padding: 0.5rem; border-radius: 0.375rem; transition: background-color 0.15s ease-in-out; }
+        .delete-button { padding: 0.5rem; border-radius: 0.375rem; transition: background-color 0.15s ease-in-out; cursor:pointer; }
         .delete-button svg { width: 1.25rem; height: 1.25rem; }
         #exportOptions label { margin-right: 10px; }
-        #authSection, #registrationSection, #mainAppContent, #kpiSection { display: none; }
-        #kpiSection canvas { max-width: 100%; height: auto; max-height: 350px; }
+        #authSection, #registrationSection, #mainAppContent, #kpiSection, #detailedKpiReportSection, #callDetailSection { display: none; }
+        #kpiSection canvas, #detailedKpiReportSection canvas { max-width: 100%; height: auto; max-height: 350px; }
         label { margin-bottom: 0.25rem; display: block; } 
         #callForm > div { margin-bottom: 1rem; } 
-        #mainAppContent { position: relative; /* Para posicionar el botón Volver */ }
+        #mainAppContent { position: relative; }
+        .detail-link { cursor: pointer; text-decoration: underline; color: #0ea5e9; }
+        .dark .detail-link { color: #38bdf8; }
+        #callDetailSection dt { font-weight: 600; margin-top: 0.5rem; }
+        #callDetailSection dd { margin-left: 1rem; margin-bottom: 0.5rem; }
     </style>
 </head>
 <body class="antialiased text-slate-500 dark:text-slate-400 bg-white dark:bg-slate-900">
@@ -72,13 +76,15 @@
             <p class="mt-4 text-center text-sm">¿Ya tienes cuenta? <a href="#" id="showLoginLink" class="font-medium text-sky-600 hover:text-sky-500 dark:text-sky-400 dark:hover:text-sky-300">Inicia sesión aquí</a></p>
         </section>
 
-        <div id="mainAppContent" class="relative"> <button id="genericBackButton" class="absolute top-0 left-0 mb-4 bg-gray-200 hover:bg-gray-300 dark:bg-slate-700 dark:hover:bg-slate-600 dark:text-slate-200 text-gray-700 font-semibold py-2 px-4 rounded-lg shadow-md hidden">&larr; Volver</button>
+        <div id="mainAppContent" class="relative"> 
+            <button id="genericBackButton" class="absolute top-0 left-0 mb-4 bg-gray-200 hover:bg-gray-300 dark:bg-slate-700 dark:hover:bg-slate-600 dark:text-slate-200 text-gray-700 font-semibold py-2 px-4 rounded-lg shadow-md hidden z-10">&larr; Volver</button>
             
-            <div id="mainAppButtons" class="flex flex-wrap justify-center items-center gap-4 mb-6 pt-12 sm:pt-0"> <button id="viewHistoryChoiceButton" class="bg-sky-500 hover:bg-sky-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md">Ver Historial</button>
+            <div id="mainAppButtons" class="flex flex-wrap justify-center items-center gap-4 mb-6 pt-12 sm:pt-0"> 
+                <button id="viewHistoryChoiceButton" class="bg-sky-500 hover:bg-sky-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md">Ver Historial</button>
                 <button id="registerNewCallButton" class="bg-indigo-500 hover:bg-indigo-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md hidden">Registrar Nueva Llamada</button>
                 <button id="viewKpiButton" class="bg-purple-500 hover:bg-purple-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md hidden">Ver KPIs</button>
                 <button id="exportHistoryButton" class="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md hidden">Exportar Historial</button>
-                </div>
+            </div>
 
             <section id="formSection" class="bg-slate-50 dark:bg-slate-800 p-6 rounded-xl shadow-xl mb-8">
                 <h2 class="text-2xl font-semibold mb-6 text-slate-800 dark:text-slate-200">Registrar Nueva Llamada</h2>
@@ -125,6 +131,19 @@
                     <div><h3 class="text-lg font-medium mb-2 text-center">Urgencia Contacto</h3><canvas id="urgenciaContactoChart"></canvas></div>
                 </div>
             </section>
+            
+            <section id="detailedKpiReportSection" class="hidden bg-slate-50 dark:bg-slate-800 p-6 rounded-xl shadow-xl mt-8">
+                <h2 id="detailedKpiTitle" class="text-xl font-semibold mb-4 text-slate-800 dark:text-slate-200 text-center">Informe Detallado</h2>
+                <div class="mb-4"> <canvas id="detailedKpiChart"></canvas> </div>
+                <div id="detailedKpiText" class="text-sm text-slate-600 dark:text-slate-400"></div>
+            </section>
+
+            <section id="callDetailSection" class="hidden bg-slate-50 dark:bg-slate-800 p-6 rounded-xl shadow-xl mt-8">
+                <h2 id="callDetailTitle" class="text-xl font-semibold mb-4 text-slate-800 dark:text-slate-200 text-center">Detalle de la Llamada</h2>
+                <dl id="callDetailContent" class="divide-y divide-slate-200 dark:divide-slate-700">
+                    </dl>
+            </section>
+
         </div> </div>
 
     <div id="messageModal" class="modal"><div class="modal-content"><p id="modalMessage" class="text-lg mb-4"></p><button id="closeModalButton" class="bg-sky-500 hover:bg-sky-600 text-white font-semibold py-2 px-4 rounded-md">Cerrar</button></div></div>
@@ -155,30 +174,36 @@
         let currentUserId = null, currentUserFullName = ""; 
         let callsCollectionRef, unsubscribeHistory, currentFilteredCalls = [];
         let chartInstances = {}; 
+        let currentKpiView = null; 
+        let currentHistoryViewType = 'form'; // 'form', 'myHistory', 'allHistory', 'kpi', 'detailedKpi', 'callDetail'
 
         const concesionarios = ["Agrícola Arrecifes","Agrícola Noroeste","Agrícola Rafaela S.A.","Agro de Souza S.A.","Agro Scheidegger","Agro Sur S.A.C.I.F.I.A.","Agrocomercial Chivilcoy","Agromaq Saladillo S.R.L.","Alonso Maquinarias","Altamirano Oscar A. Maquinaria","Álvarez Maquinarias","Anta Maquinarias S.R.L.","Botto Víctor","Calatroni Javier","Caminiti Caminos","Caon Maquinarias","Castagno y Priotti S.A.S.","Centeno maquinarias","Ciagro","Combes Gabriel","Corporacion de Máquinaria Sa","Cosechar S.A.","Cri - Mag","Criolani","Depetris","Distribuidora Z","Echevarria","El Marrullero","EQ S.A.","Ferrari maquinarias","Frare Hernán","Gondra","Guerrero Carlos","Implementos Quadri SRL","Lanzetti","Litoral Comercial S.A","Luciano Salvador","Luis S Ferro","M.F.M. Rural S.R.L","Maquiagro (Moralejo)","Máquinas del Centro","Maratta maquinarias","Net Multiagro SRL","Pajín maquinarias S.A","Pallotti Diego","Perracino","Perticarini","Pintucci y Gûizzo","Pozzi Maquinarias","Realicó Agrosoluciones (RAS)","Sabbione","Schmidt Mauricio","Silvia Lombardi","Silvio Quevedo","Spitale Osvaldo","Sur Pampa S.A.(Uribe)","Taborro Omar","Tecnomac","Todo Campo (Salum)","Vagliengo Maquinarias","Weinbaur","Wirz Carlos","Zappelli"];
         const authSection = document.getElementById('authSection'), registrationSection = document.getElementById('registrationSection'), loginForm = document.getElementById('loginForm'), registrationForm = document.getElementById('registrationForm'), showRegisterLink = document.getElementById('showRegisterLink'), showLoginLink = document.getElementById('showLoginLink'), userNameDisplay = document.getElementById('userNameDisplay'), logoutButton = document.getElementById('logoutButton'), mainAppContent = document.getElementById('mainAppContent'), mainAppButtons = document.getElementById('mainAppButtons'), callFormEl = document.getElementById('callForm'), viewHistoryChoiceButton = document.getElementById('viewHistoryChoiceButton'), registerNewCallButton = document.getElementById('registerNewCallButton'), viewKpiButton = document.getElementById('viewKpiButton'), genericBackButton = document.getElementById('genericBackButton'), exportHistoryButton = document.getElementById('exportHistoryButton'), formSection = document.getElementById('formSection'), historySection = document.getElementById('historySection'), kpiSection = document.getElementById('kpiSection'), kpiTitle = document.getElementById('kpiTitle'), kpiDataStatus = document.getElementById('kpiDataStatus'), historyTitle = document.getElementById('historyTitle'), historyTableHead = document.getElementById('historyTableHead'), historyTableBody = document.getElementById('historyTableBody'), filterNombreInput = document.getElementById('filterNombre'), filterConcesionarioInput = document.getElementById('filterConcesionario'), historySpinner = document.getElementById('historySpinner'), noHistoryMessage = document.getElementById('noHistoryMessage'), historyTable = document.getElementById('historyTable'), messageModal = document.getElementById('messageModal'), modalMessage = document.getElementById('modalMessage'), closeModalButton = document.getElementById('closeModalButton'), confirmDeleteModal = document.getElementById('confirmDeleteModal'), confirmDeleteMessage = document.getElementById('confirmDeleteMessage'), cancelDeleteButton = document.getElementById('cancelDeleteButton'), confirmDeleteActionButton = document.getElementById('confirmDeleteActionButton'), exportModal = document.getElementById('exportModal'), cancelExportButton = document.getElementById('cancelExportButton'), confirmExportButton = document.getElementById('confirmExportButton'), historyChoiceModal = document.getElementById('historyChoiceModal'), myHistoryButton = document.getElementById('myHistoryButton'), allHistoryButton = document.getElementById('allHistoryButton'), cancelHistoryChoiceButton = document.getElementById('cancelHistoryChoiceButton');
+        const detailedKpiReportSection = document.getElementById('detailedKpiReportSection'), detailedKpiTitle = document.getElementById('detailedKpiTitle'), detailedKpiText = document.getElementById('detailedKpiText');
+        const callDetailSection = document.getElementById('callDetailSection'), callDetailTitle = document.getElementById('callDetailTitle'), callDetailContent = document.getElementById('callDetailContent');
         let callIdToDelete = null; 
 
         function populateConcesionariosDropdown() { const select = document.getElementById('nombreConcesionario'); concesionarios.forEach(c => { const o = document.createElement('option'); o.value = c; o.textContent = c; select.appendChild(o); });}
 
         function updateMainAppButtonVisibility(currentView) { 
             viewHistoryChoiceButton.classList.toggle('hidden', currentView !== 'form'); 
-            registerNewCallButton.classList.toggle('hidden', currentView === 'form'); 
+            registerNewCallButton.classList.toggle('hidden', currentView === 'form' || currentView === 'detailedKpi' || currentView === 'callDetail'); 
             exportHistoryButton.classList.toggle('hidden', currentView !== 'history' || currentFilteredCalls.length === 0); 
             viewKpiButton.classList.toggle('hidden', currentView !== 'history' || currentFilteredCalls.length === 0); 
-            genericBackButton.classList.toggle('hidden', currentView === 'form'); // Mostrar botón volver si no estamos en el form principal
+            genericBackButton.classList.toggle('hidden', currentView === 'form'); 
         }
 
         function showView(viewName) { 
             authSection.style.display = viewName === 'login' ? 'block' : 'none'; 
             registrationSection.style.display = viewName === 'register' ? 'block' : 'none'; 
-            mainAppContent.style.display = ['form', 'history', 'kpi'].includes(viewName) ? 'block' : 'none'; 
+            mainAppContent.style.display = ['form', 'history', 'kpi', 'detailedKpi', 'callDetail'].includes(viewName) ? 'block' : 'none'; 
             
-            if (['form', 'history', 'kpi'].includes(viewName)) { 
+            if (['form', 'history', 'kpi', 'detailedKpi', 'callDetail'].includes(viewName)) { 
                 formSection.style.display = viewName === 'form' ? 'block' : 'none'; 
                 historySection.style.display = viewName === 'history' ? 'block' : 'none'; 
                 kpiSection.style.display = viewName === 'kpi' ? 'block' : 'none'; 
+                detailedKpiReportSection.style.display = viewName === 'detailedKpi' ? 'block' : 'none';
+                callDetailSection.style.display = viewName === 'callDetail' ? 'block' : 'none';
                 updateMainAppButtonVisibility(viewName); 
             } else { 
                 updateMainAppButtonVisibility('none'); 
@@ -190,6 +215,7 @@
             } else if (currentUserId) { 
                 logoutButton.classList.remove('hidden'); 
             } 
+            currentKpiView = viewName; 
         }
 
         showRegisterLink.addEventListener('click', (e) => { e.preventDefault(); showView('register'); });
@@ -238,6 +264,7 @@
         function loadHistory(fetchAllUsers = false) {
             if (!currentUserId && !fetchAllUsers) { noHistoryMessage.textContent = "Debe iniciar sesión."; noHistoryMessage.style.display = "block"; historySpinner.style.display = "none"; if(historyTable) historyTable.classList.add('hidden'); exportHistoryButton.classList.add('hidden'); viewKpiButton.classList.add('hidden'); return; }
             historyTitle.textContent = fetchAllUsers ? "Historial Completo de Llamadas" : "Mi Historial de Llamadas";
+            currentHistoryViewType = fetchAllUsers ? 'allHistory' : 'myHistory'; // Guardar tipo de vista
             historySpinner.style.display = "block"; noHistoryMessage.style.display = "none"; historyTableBody.innerHTML = ''; historyTableHead.innerHTML = ''; 
             if (unsubscribeHistory) unsubscribeHistory(); unsubscribeHistory = null;
             let q;
@@ -272,22 +299,31 @@
                     const fDate = `${date.getDate().toString().padStart(2,'0')}/${(date.getMonth()+1).toString().padStart(2,'0')}/${date.getFullYear()} ${date.getHours().toString().padStart(2,'0')}:${String(date.getMinutes()).padStart(2,'0')}`;
                     
                     let cellIndex = 0;
-                    const addCell = (text, title = null) => {
+                    const addCell = (text, title = null, isLink = false, callId = null) => {
                         const cell = row.insertCell(cellIndex++);
-                        cell.textContent = text;
+                        if (isLink) {
+                            const link = document.createElement('a');
+                            link.href = "#";
+                            link.textContent = text;
+                            link.className = "detail-link";
+                            link.onclick = (e) => { e.preventDefault(); displayCallDetails(callId); };
+                            cell.appendChild(link);
+                        } else {
+                            cell.textContent = text;
+                        }
                         cell.className = "px-4 py-3 text-sm text-slate-700 dark:text-slate-300 whitespace-nowrap";
                         if (title) cell.title = title;
-                        if (text && text.length > 30 && cellIndex < baseH.length -1) { 
+                        if (text && text.length > 25 && cellIndex < baseH.length -1 && !isLink) { 
                              cell.classList.add("max-w-xs", "overflow-hidden", "overflow-ellipsis");
                         }
                     };
 
                     addCell(fDate);
                     if (fetchAllUsers) addCell(call.registradoPor || 'N/A');
-                    addCell(call.nombreContacto);
+                    addCell(call.nombreContacto, null, true, call.id); // Hacer el nombre del contacto un enlace
                     addCell(call.tipoMaquina);
                     addCell(call.nombreConcesionario);
-                    addCell(call.observacionReclamo ? call.observacionReclamo.substring(0,30)+(call.observacionReclamo.length > 30 ? '...' : '') : 'N/A', call.observacionReclamo);
+                    addCell(call.observacionReclamo ? call.observacionReclamo.substring(0,25)+(call.observacionReclamo.length > 25 ? '...' : '') : 'N/A', call.observacionReclamo);
                     
                     const actCell = row.insertCell(cellIndex); actCell.className = "px-4 py-3 text-sm text-center";
                     if (call.userId === currentUserId) { 
@@ -300,6 +336,33 @@
             }
         }
 
+        function displayCallDetails(callId) {
+            const call = currentFilteredCalls.find(c => c.id === callId);
+            if (!call) {
+                showModalMessage("No se pudieron encontrar los detalles de la llamada.");
+                return;
+            }
+            callDetailTitle.textContent = `Detalle de Llamada - Contacto: ${call.nombreContacto}`;
+            let detailsHtml = '';
+            const fieldLabels = {
+                timestamp: "Fecha y Hora", quienLlama: "¿Quién Llama?", nombreContacto: "Nombre Contacto", ofMaquina: "OF Máquina", tipoMaquina: "Tipo Máquina", nombreClienteFactura: "Cliente (Factura)", nombreConcesionario: "Concesionario", ubicacionReclamo: "Ubicación Consulta", observacionReclamo: "Observación", motivoRespuesta: "Motivo/Respuesta", canalContacto: "Canal Contacto", duracionContacto: "Duración Contacto", urgenciaContacto: "Urgencia Contacto", registradoPor: "Registrado por", userId: "ID Usuario Registró"
+            };
+
+            for (const key in call) {
+                if (key !== 'id' && fieldLabels[key]) { // Excluir 'id' y campos sin etiqueta definida
+                    let value = call[key];
+                    if (key === 'timestamp' && value && typeof value.toDate === 'function') {
+                        const date = value.toDate();
+                        value = `${date.getDate().toString().padStart(2,'0')}/${(date.getMonth()+1).toString().padStart(2,'0')}/${date.getFullYear()} ${date.getHours().toString().padStart(2,'0')}:${String(date.getMinutes()).padStart(2,'0')}`;
+                    }
+                    detailsHtml += `<div class="py-2"><dt class="text-sm font-medium text-slate-500 dark:text-slate-400">${fieldLabels[key]}</dt><dd class="mt-1 text-sm text-slate-900 dark:text-slate-100">${value || 'N/A'}</dd></div>`;
+                }
+            }
+            callDetailContent.innerHTML = detailsHtml;
+            showView('callDetail');
+        }
+
+
         function clearHistoryTable() { historyTableBody.innerHTML = ''; historyTableHead.innerHTML = ''; noHistoryMessage.textContent = "No hay llamadas."; noHistoryMessage.style.display = "block"; if(historyTable) historyTable.classList.add('hidden'); exportHistoryButton.classList.add('hidden'); viewKpiButton.classList.add('hidden'); currentFilteredCalls = []; }
         filterNombreInput.addEventListener('input', () => loadHistory(historyTitle.textContent.includes("Completo")));
         filterConcesionarioInput.addEventListener('input', () => loadHistory(historyTitle.textContent.includes("Completo")));
@@ -311,10 +374,13 @@
         registerNewCallButton.addEventListener('click', () => { showView('form'); if (unsubscribeHistory) { unsubscribeHistory(); unsubscribeHistory = null; } clearHistoryTable(); });
         
         genericBackButton.addEventListener('click', () => {
-            if (kpiSection.style.display === 'block') {
+            if (currentKpiView === 'callDetail') {
+                showView('history'); // Vuelve al tipo de historial que se estaba viendo
+                loadHistory(historyTitle.textContent.includes("Completo"));
+            } else if (currentKpiView === 'kpi') {
                 showView('history');
-                loadHistory(historyTitle.textContent.includes("Completo")); // Recargar historial actual
-            } else if (historySection.style.display === 'block') {
+                loadHistory(historyTitle.textContent.includes("Completo")); 
+            } else if (currentKpiView === 'history') {
                 showView('form');
                 if (unsubscribeHistory) { unsubscribeHistory(); unsubscribeHistory = null; }
                 clearHistoryTable();
@@ -344,28 +410,150 @@
         function processDataForPieChart(calls, fieldName, nameCombiner = null) { const counts = {}; calls.forEach(call => { let key; if (nameCombiner) key = nameCombiner(call); else key = call[fieldName] || "No especificado"; counts[key] = (counts[key] || 0) + 1; }); return { labels: Object.keys(counts), data: Object.values(counts) }; }
         function getRandomColor() { const r = Math.floor(Math.random()*200)+25; const g = Math.floor(Math.random()*200)+25; const b = Math.floor(Math.random()*200)+25; return `rgba(${r},${g},${b},0.7)`; } 
         
-        function renderPieChart(canvasId, chartData, chartLabel) {
+        function renderPieChart(canvasId, chartData, chartLabel, kpiField, kpiFieldLabel) {
             const ctx = document.getElementById(canvasId).getContext('2d');
             if (chartInstances[canvasId]) chartInstances[canvasId].destroy(); 
             if (chartData.labels.length === 0) { document.getElementById(canvasId).style.display = 'none'; return null; }
             document.getElementById(canvasId).style.display = 'block';
             const bgColors = chartData.labels.map(() => getRandomColor());
-            chartInstances[canvasId] = new Chart(ctx, { type: 'pie', data: { labels: chartData.labels, datasets: [{ label: chartLabel, data: chartData.data, backgroundColor: bgColors, borderColor: bgColors.map(c => c.replace('0.7','1')), borderWidth: 1 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'top' }, tooltip: { callbacks: { label: function(c){ let l = c.label||''; if(l)l+=': '; if(c.parsed!==null)l+=c.parsed; return l; } } } } } });
+            
+            chartInstances[canvasId] = new Chart(ctx, { 
+                type: 'pie', 
+                data: { 
+                    labels: chartData.labels, 
+                    datasets: [{ 
+                        label: chartLabel, 
+                        data: chartData.data, 
+                        backgroundColor: bgColors, 
+                        borderColor: bgColors.map(c => c.replace('0.7','1')), 
+                        borderWidth: 1 
+                    }] 
+                }, 
+                options: { 
+                    responsive: true, 
+                    maintainAspectRatio: false, 
+                    plugins: { 
+                        legend: { position: 'top' }, 
+                        tooltip: { 
+                            callbacks: { 
+                                label: function(context){ 
+                                    let label = context.label || ''; 
+                                    const value = context.parsed;
+                                    const total = context.dataset.data.reduce((acc, val) => acc + val, 0);
+                                    const percentage = total > 0 ? ((value / total) * 100).toFixed(1) + '%' : '0%';
+                                    if(label) label += ': '; 
+                                    if(value !== null) label += `${value} (${percentage})`; 
+                                    return label; 
+                                } 
+                            } 
+                        } 
+                    },
+                    onClick: (event, elements) => {
+                        if (elements.length > 0) {
+                            const chartElement = elements[0];
+                            const clickedLabel = chartData.labels[chartElement.index];
+                            console.log(`Clicked on ${chartLabel} - Slice: ${clickedLabel}, Field: ${kpiField}`);
+                            generateDetailedKpiReport(kpiField, clickedLabel, kpiFieldLabel);
+                        }
+                    }
+                } 
+            });
         }
+
+        function renderBarChart(canvasId, chartData, chartLabel) {
+            const ctx = document.getElementById(canvasId).getContext('2d');
+            if (chartInstances[canvasId]) chartInstances[canvasId].destroy();
+            if (chartData.labels.length === 0) { document.getElementById(canvasId).style.display = 'none'; return null; }
+             document.getElementById(canvasId).style.display = 'block';
+            const bgColors = chartData.labels.map(() => getRandomColor());
+
+            chartInstances[canvasId] = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: chartData.labels,
+                    datasets: [{
+                        label: chartLabel,
+                        data: chartData.data,
+                        backgroundColor: bgColors,
+                        borderColor: bgColors.map(c => c.replace('0.7','1')),
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    indexAxis: 'y', 
+                    plugins: {
+                        legend: { display: false }, 
+                         tooltip: { 
+                            callbacks: { 
+                                label: function(context){ 
+                                    let label = context.dataset.label || ''; 
+                                    if(label) label += ': '; 
+                                    if(context.parsed.x !== null) label += context.parsed.x; 
+                                    return label; 
+                                } 
+                            } 
+                        } 
+                    },
+                    scales: {
+                        x: { beginAtZero: true }
+                    }
+                }
+            });
+        }
+
+
+        function generateDetailedKpiReport(originalKpiField, selectedLabel, originalKpiFieldLabel) {
+            detailedKpiTitle.textContent = `Detalle para ${originalKpiFieldLabel}: "${selectedLabel}"`;
+            
+            const filteredForDetail = currentFilteredCalls.filter(call => {
+                if (originalKpiField === 'nombreContacto') { // Caso especial para nombreContacto que es combinado
+                    return (`${call.nombreContacto || "No especificado"}`) === selectedLabel;
+                }
+                return (call[originalKpiField] || "No especificado") === selectedLabel;
+            });
+
+            if (filteredForDetail.length === 0) {
+                detailedKpiText.textContent = "No hay datos adicionales para este desglose.";
+                if (chartInstances['detailedKpiChart']) chartInstances['detailedKpiChart'].destroy();
+                document.getElementById('detailedKpiChart').style.display = 'none';
+                showView('detailedKpi');
+                return;
+            }
+
+            let secondaryField, secondaryFieldLabel;
+            if (originalKpiField === 'nombreConcesionario') { secondaryField = 'tipoMaquina'; secondaryFieldLabel = 'Tipos de Máquina'; } 
+            else if (originalKpiField === 'tipoMaquina') { secondaryField = 'nombreConcesionario'; secondaryFieldLabel = 'Concesionarios'; } 
+            else if (originalKpiField === 'quienLlama') { secondaryField = 'canalContacto'; secondaryFieldLabel = 'Canal de Contacto'; } 
+            else if (originalKpiField === 'canalContacto') { secondaryField = 'duracionContacto'; secondaryFieldLabel = 'Duración del Contacto'; }
+            else { secondaryField = 'motivoRespuesta'; secondaryFieldLabel = 'Motivo/Respuesta';}
+
+            const detailedChartData = processDataForPieChart(filteredForDetail, secondaryField); 
+            renderBarChart('detailedKpiChart', detailedChartData, `${secondaryFieldLabel} para ${selectedLabel}`);
+            
+            let reportText = `Se encontraron ${filteredForDetail.length} llamadas para ${originalKpiFieldLabel}: "${selectedLabel}".\n`;
+            reportText += `Distribución por ${secondaryFieldLabel}:\n`;
+            detailedChartData.labels.forEach((label, index) => { reportText += `- ${label}: ${detailedChartData.data[index]}\n`; });
+            detailedKpiText.innerHTML = reportText.replace(/\n/g, '<br>'); 
+
+            showView('detailedKpi');
+        }
+
 
         function generateAndRenderKPIs() {
             if (currentFilteredCalls.length === 0) { kpiDataStatus.textContent = "No hay datos para mostrar en los KPIs."; kpiDataStatus.style.display = "block"; Object.values(chartInstances).forEach(cI => cI?.destroy()); chartInstances={}; document.querySelectorAll('#kpiSection canvas').forEach(c => c.style.display = 'none'); return; }
             kpiDataStatus.style.display = "none";
             
-            renderPieChart('callerNameChart', processDataForPieChart(currentFilteredCalls, null, call => call.nombreContacto || "No especificado"), 'Llamadas por Contacto');
-            renderPieChart('dealershipChart', processDataForPieChart(currentFilteredCalls, 'nombreConcesionario'), 'Llamadas por Concesionario');
-            renderPieChart('quienLlamaChart', processDataForPieChart(currentFilteredCalls, 'quienLlama'), '¿Quién Llama?');
-            renderPieChart('tipoMaquinaChart', processDataForPieChart(currentFilteredCalls, 'tipoMaquina'), 'Tipo de Máquina');
-            renderPieChart('ubicacionReclamoChart', processDataForPieChart(currentFilteredCalls, 'ubicacionReclamo'), 'Ubicación Consulta');
-            renderPieChart('motivoRespuestaChart', processDataForPieChart(currentFilteredCalls, 'motivoRespuesta'), 'Motivo/Respuesta');
-            renderPieChart('canalContactoChart', processDataForPieChart(currentFilteredCalls, 'canalContacto'), 'Canal de Contacto');
-            renderPieChart('duracionContactoChart', processDataForPieChart(currentFilteredCalls, 'duracionContacto'), 'Duración Contacto');
-            renderPieChart('urgenciaContactoChart', processDataForPieChart(currentFilteredCalls, 'urgenciaContacto'), 'Urgencia Contacto');
+            renderPieChart('callerNameChart', processDataForPieChart(currentFilteredCalls, null, call => call.nombreContacto || "No especificado"), 'Llamadas por Contacto', 'nombreContacto', 'Contacto');
+            renderPieChart('dealershipChart', processDataForPieChart(currentFilteredCalls, 'nombreConcesionario'), 'Llamadas por Concesionario', 'nombreConcesionario', 'Concesionario');
+            renderPieChart('quienLlamaChart', processDataForPieChart(currentFilteredCalls, 'quienLlama'), '¿Quién Llama?', 'quienLlama', 'Quién Llama');
+            renderPieChart('tipoMaquinaChart', processDataForPieChart(currentFilteredCalls, 'tipoMaquina'), 'Tipo de Máquina', 'tipoMaquina', 'Tipo de Máquina');
+            renderPieChart('ubicacionReclamoChart', processDataForPieChart(currentFilteredCalls, 'ubicacionReclamo'), 'Ubicación Consulta', 'ubicacionReclamo', 'Ubicación Consulta');
+            renderPieChart('motivoRespuestaChart', processDataForPieChart(currentFilteredCalls, 'motivoRespuesta'), 'Motivo/Respuesta', 'motivoRespuesta', 'Motivo/Respuesta');
+            renderPieChart('canalContactoChart', processDataForPieChart(currentFilteredCalls, 'canalContacto'), 'Canal de Contacto', 'canalContacto', 'Canal de Contacto');
+            renderPieChart('duracionContactoChart', processDataForPieChart(currentFilteredCalls, 'duracionContacto'), 'Duración Contacto', 'duracionContacto', 'Duración Contacto');
+            renderPieChart('urgenciaContactoChart', processDataForPieChart(currentFilteredCalls, 'urgenciaContacto'), 'Urgencia Contacto', 'urgenciaContacto', 'Urgencia Contacto');
         }
 
         document.addEventListener('DOMContentLoaded', () => {
