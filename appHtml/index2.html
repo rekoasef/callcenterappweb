@@ -33,11 +33,10 @@
         .delete-button svg { width: 1.25rem; height: 1.25rem; }
         #exportOptions label { margin-right: 10px; }
         #authSection, #registrationSection, #mainAppContent, #kpiSection { display: none; }
-        #kpiSection canvas { max-width: 100%; height: auto; max-height: 400px; }
-        /* Ajuste para etiquetas de formularios más largos */
+        #kpiSection canvas { max-width: 100%; height: auto; max-height: 350px; }
         label { margin-bottom: 0.25rem; display: block; } 
-        /* Mejorar espaciado en formularios con muchos campos */
         #callForm > div { margin-bottom: 1rem; } 
+        #mainAppContent { position: relative; /* Para posicionar el botón Volver */ }
     </style>
 </head>
 <body class="antialiased text-slate-500 dark:text-slate-400 bg-white dark:bg-slate-900">
@@ -53,23 +52,11 @@
         <section id="authSection" class="bg-slate-50 dark:bg-slate-800 p-6 rounded-xl shadow-xl mb-8 max-w-md mx-auto">
             <h2 class="text-2xl font-semibold mb-6 text-slate-800 dark:text-slate-200 text-center">Iniciar Sesión</h2>
             <form id="loginForm" class="space-y-6">
-                <div>
-                    <label for="loginEmail" class="block text-sm font-medium text-slate-700 dark:text-slate-300">Correo Electrónico</label>
-                    <input type="email" id="loginEmail" name="loginEmail" required class="mt-1 block w-full px-3 py-2 bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-md shadow-sm focus:outline-none focus:ring-sky-500 focus:border-sky-500 sm:text-sm text-slate-900 dark:text-slate-100">
-                </div>
-                <div>
-                    <label for="loginPassword" class="block text-sm font-medium text-slate-700 dark:text-slate-300">Contraseña</label>
-                    <input type="password" id="loginPassword" name="loginPassword" required class="mt-1 block w-full px-3 py-2 bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-md shadow-sm focus:outline-none focus:ring-sky-500 focus:border-sky-500 sm:text-sm text-slate-900 dark:text-slate-100">
-                </div>
-                <div>
-                    <button type="submit" class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-sky-600 hover:bg-sky-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-sky-500">
-                        Ingresar
-                    </button>
-                </div>
+                <div><label for="loginEmail" class="block text-sm font-medium text-slate-700 dark:text-slate-300">Correo Electrónico</label><input type="email" id="loginEmail" name="loginEmail" required class="mt-1 block w-full px-3 py-2 bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-md shadow-sm focus:outline-none focus:ring-sky-500 focus:border-sky-500 sm:text-sm text-slate-900 dark:text-slate-100"></div>
+                <div><label for="loginPassword" class="block text-sm font-medium text-slate-700 dark:text-slate-300">Contraseña</label><input type="password" id="loginPassword" name="loginPassword" required class="mt-1 block w-full px-3 py-2 bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-md shadow-sm focus:outline-none focus:ring-sky-500 focus:border-sky-500 sm:text-sm text-slate-900 dark:text-slate-100"></div>
+                <div><button type="submit" class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-sky-600 hover:bg-sky-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-sky-500">Ingresar</button></div>
             </form>
-            <p class="mt-4 text-center text-sm">
-                ¿No tienes cuenta? <a href="#" id="showRegisterLink" class="font-medium text-sky-600 hover:text-sky-500 dark:text-sky-400 dark:hover:text-sky-300">Regístrate aquí</a>
-            </p>
+            <p class="mt-4 text-center text-sm">¿No tienes cuenta? <a href="#" id="showRegisterLink" class="font-medium text-sky-600 hover:text-sky-500 dark:text-sky-400 dark:hover:text-sky-300">Regístrate aquí</a></p>
         </section>
 
         <section id="registrationSection" class="bg-slate-50 dark:bg-slate-800 p-6 rounded-xl shadow-xl mb-8 max-w-md mx-auto">
@@ -85,448 +72,167 @@
             <p class="mt-4 text-center text-sm">¿Ya tienes cuenta? <a href="#" id="showLoginLink" class="font-medium text-sky-600 hover:text-sky-500 dark:text-sky-400 dark:hover:text-sky-300">Inicia sesión aquí</a></p>
         </section>
 
-        <div id="mainAppContent">
-            <div id="mainAppButtons" class="flex flex-col sm:flex-row justify-center items-center space-y-4 sm:space-y-0 sm:space-x-4 mb-6">
-                <button id="viewHistoryChoiceButton" class="w-full sm:w-auto bg-sky-500 hover:bg-sky-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-150 ease-in-out">Ver Historial</button>
-                <button id="registerNewCallButton" class="w-full sm:w-auto bg-indigo-500 hover:bg-indigo-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-150 ease-in-out hidden">Registrar Nueva Llamada</button>
-                <button id="viewKpiButton" class="w-full sm:w-auto bg-purple-500 hover:bg-purple-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-150 ease-in-out hidden">Ver KPIs</button>
-                <button id="exportHistoryButton" class="w-full sm:w-auto bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-150 ease-in-out hidden">Exportar Historial</button>
-                <button id="backToHistoryButton" class="w-full sm:w-auto bg-gray-500 hover:bg-gray-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-150 ease-in-out hidden">Volver al Historial</button>
-            </div>
+        <div id="mainAppContent" class="relative"> <button id="genericBackButton" class="absolute top-0 left-0 mb-4 bg-gray-200 hover:bg-gray-300 dark:bg-slate-700 dark:hover:bg-slate-600 dark:text-slate-200 text-gray-700 font-semibold py-2 px-4 rounded-lg shadow-md hidden">&larr; Volver</button>
+            
+            <div id="mainAppButtons" class="flex flex-wrap justify-center items-center gap-4 mb-6 pt-12 sm:pt-0"> <button id="viewHistoryChoiceButton" class="bg-sky-500 hover:bg-sky-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md">Ver Historial</button>
+                <button id="registerNewCallButton" class="bg-indigo-500 hover:bg-indigo-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md hidden">Registrar Nueva Llamada</button>
+                <button id="viewKpiButton" class="bg-purple-500 hover:bg-purple-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md hidden">Ver KPIs</button>
+                <button id="exportHistoryButton" class="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md hidden">Exportar Historial</button>
+                </div>
 
             <section id="formSection" class="bg-slate-50 dark:bg-slate-800 p-6 rounded-xl shadow-xl mb-8">
                 <h2 class="text-2xl font-semibold mb-6 text-slate-800 dark:text-slate-200">Registrar Nueva Llamada</h2>
                 <form id="callForm">
-                    <div>
-                        <label for="quienLlama" class="block text-sm font-medium text-slate-700 dark:text-slate-300">¿Quién llama?</label>
-                        <select id="quienLlama" name="quienLlama" required class="mt-1 block w-full px-3 py-2 bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-md shadow-sm focus:outline-none focus:ring-sky-500 focus:border-sky-500 sm:text-sm text-slate-900 dark:text-slate-100">
-                            <option value="">Seleccione una opción...</option>
-                            <option value="Concesionario">Concesionario</option>
-                            <option value="Mecánico de fábrica">Mecánico de fábrica</option>
-                            <option value="Comercial de fábrica">Comercial de fábrica</option>
-                            <option value="Cliente">Cliente</option>
-                            <option value="Otro">Otro</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label for="nombreContacto" class="block text-sm font-medium text-slate-700 dark:text-slate-300">Nombre y Apellido de quien realiza el llamado o envío de WhatsApp</label>
-                        <input type="text" id="nombreContacto" name="nombreContacto" required class="mt-1 block w-full px-3 py-2 bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-md shadow-sm focus:outline-none focus:ring-sky-500 focus:border-sky-500 sm:text-sm text-slate-900 dark:text-slate-100">
-                    </div>
-                    <div>
-                        <label for="ofMaquina" class="block text-sm font-medium text-slate-700 dark:text-slate-300">OF de la Máquina (acuñado en chasis)</label>
-                        <input type="text" id="ofMaquina" name="ofMaquina" class="mt-1 block w-full px-3 py-2 bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-md shadow-sm focus:outline-none focus:ring-sky-500 focus:border-sky-500 sm:text-sm text-slate-900 dark:text-slate-100">
-                    </div>
-                    <div>
-                        <label for="tipoMaquina" class="block text-sm font-medium text-slate-700 dark:text-slate-300">Tipo de Máquina</label>
-                        <select id="tipoMaquina" name="tipoMaquina" required class="mt-1 block w-full px-3 py-2 bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-md shadow-sm focus:outline-none focus:ring-sky-500 focus:border-sky-500 sm:text-sm text-slate-900 dark:text-slate-100">
-                            <option value="">Seleccione una opción...</option>
-                            <option value="Gringa">Gringa</option>
-                            <option value="Pionera">Pionera</option>
-                            <option value="Drilor">Drilor</option>
-                            <option value="Plantor">Plantor</option>
-                            <option value="Mixia">Mixia</option>
-                            <option value="Domina">Domina</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label for="nombreClienteFactura" class="block text-sm font-medium text-slate-700 dark:text-slate-300">Cliente (Idéntico a como salió facturada la máquina)</label>
-                        <input type="text" id="nombreClienteFactura" name="nombreClienteFactura" class="mt-1 block w-full px-3 py-2 bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-md shadow-sm focus:outline-none focus:ring-sky-500 focus:border-sky-500 sm:text-sm text-slate-900 dark:text-slate-100">
-                    </div>
-                    <div>
-                        <label for="nombreConcesionario" class="block text-sm font-medium text-slate-700 dark:text-slate-300">Concesionario</label>
-                        <select id="nombreConcesionario" name="nombreConcesionario" required class="mt-1 block w-full px-3 py-2 bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-md shadow-sm focus:outline-none focus:ring-sky-500 focus:border-sky-500 sm:text-sm text-slate-900 dark:text-slate-100">
-                            <option value="">Seleccione un concesionario...</option>
-                            </select>
-                    </div>
-                    <div>
-                        <label for="ubicacionReclamo" class="block text-sm font-medium text-slate-700 dark:text-slate-300">Ubicación de la consulta o reclamo</label>
-                        <select id="ubicacionReclamo" name="ubicacionReclamo" required class="mt-1 block w-full px-3 py-2 bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-md shadow-sm focus:outline-none focus:ring-sky-500 focus:border-sky-500 sm:text-sm text-slate-900 dark:text-slate-100">
-                            <option value="">Seleccione una opción...</option>
-                            <option value="Accesorios">Accesorios</option>
-                            <option value="Chasis">Chasis</option>
-                            <option value="Cuchillas, Discos">Cuchillas, Discos</option>
-                            <option value="Cuerpo de siembra">Cuerpo de siembra</option>
-                            <option value="Dosificador de fertilizante">Dosificador de fertilizante</option>
-                            <option value="Dosificador de semillas">Dosificador de semillas</option>
-                            <option value="Equipo hidráulico">Equipo hidráulico</option>
-                            <option value="Lanza">Lanza</option>
-                            <option value="Leaf">Leaf</option>
-                            <option value="Mando de siembra y fertilizacion mecánico">Mando de siembra y fertilizacion mecánico</option>
-                            <option value="Marcadores">Marcadores</option>
-                            <option value="Medios de accesos a tolvas">Medios de accesos a tolvas</option>
-                            <option value="Precision Planting">Precision Planting</option>
-                            <option value="Sistema de aspiración">Sistema de aspiración</option>
-                            <option value="Sistema de sustentación">Sistema de sustentación</option>
-                            <option value="Sistema de transporte semilla - fertilizante">Sistema de transporte semilla - fertilizante</option>
-                            <option value="Tolvas">Tolvas</option>
-                        </select>
-                    </div>
-                     <div>
-                        <label for="observacionReclamo" class="block text-sm font-medium text-slate-700 dark:text-slate-300">Observación (Descripción del reclamo)</label>
-                        <textarea id="observacionReclamo" name="observacionReclamo" rows="4" required class="mt-1 block w-full px-3 py-2 bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-md shadow-sm focus:outline-none focus:ring-sky-500 focus:border-sky-500 sm:text-sm text-slate-900 dark:text-slate-100"></textarea>
-                    </div>
-                    <div>
-                        <label for="motivoRespuesta" class="block text-sm font-medium text-slate-700 dark:text-slate-300">Motivo o Respuesta</label>
-                        <select id="motivoRespuesta" name="motivoRespuesta" required class="mt-1 block w-full px-3 py-2 bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-md shadow-sm focus:outline-none focus:ring-sky-500 focus:border-sky-500 sm:text-sm text-slate-900 dark:text-slate-100">
-                            <option value="">Seleccione una opción...</option>
-                            <option value="Falla, reemplazo o envío de componente Electronico">Falla, reemplazo o envío de componente Electronico</option>
-                            <option value="Falla, reemplazo o envío de componente Hidraulico">Falla, reemplazo o envío de componente Hidraulico</option>
-                            <option value="Falla, reemplazo o envío de componente Mecánico">Falla, reemplazo o envío de componente Mecánico</option>
-                            <option value="Asistencia configuración">Asistencia configuración</option>
-                            <option value="Asistencia regulación">Asistencia regulación</option>
-                            <option value="Respuesta técnica Electronica">Respuesta técnica Electronica</option>
-                            <option value="Respuesta técnica Hidraulica">Respuesta técnica Hidraulica</option>
-                            <option value="Respuesta técnica Mecánica">Respuesta técnica Mecánica</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label for="canalContacto" class="block text-sm font-medium text-slate-700 dark:text-slate-300">Canal de contacto</label>
-                        <select id="canalContacto" name="canalContacto" required class="mt-1 block w-full px-3 py-2 bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-md shadow-sm focus:outline-none focus:ring-sky-500 focus:border-sky-500 sm:text-sm text-slate-900 dark:text-slate-100">
-                            <option value="">Seleccione una opción...</option>
-                            <option value="Telefonico">Telefonico</option>
-                            <option value="WhatsApp">WhatsApp</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label for="duracionContacto" class="block text-sm font-medium text-slate-700 dark:text-slate-300">Duración del contacto</label>
-                        <select id="duracionContacto" name="duracionContacto" required class="mt-1 block w-full px-3 py-2 bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-md shadow-sm focus:outline-none focus:ring-sky-500 focus:border-sky-500 sm:text-sm text-slate-900 dark:text-slate-100">
-                            <option value="">Seleccione una opción...</option>
-                            <option value="Menos de 5 minutos (Llamadas)">Menos de 5 minutos (Llamadas)</option>
-                            <option value="Entre 5 y 10 minutos (Llamadas)">Entre 5 y 10 minutos (Llamadas)</option>
-                            <option value="Entre 10 y 20 minutos (Llamadas)">Entre 10 y  20 minutos (Llamadas)</option>
-                            <option value="Entre 20 y 35 minutos (Llamadas)">Entre 20 y 35 minutos (Llamadas)</option>
-                            <option value="Entre 35 y 60 minutos (Llamadas)">Entre 35 y 60 minutos (Llamadas)</option>
-                            <option value="Mas de 1 hora (Llamadas)">Mas de 1 hora (Llamadas)</option>
-                            <option value="Menos de 5 minutos (Whatsapp corto)">Menos de 5 minutos (Whatsapp corto)</option>
-                            <option value="Entre 5 y 15 minutos (Whatsapp medio)">Entre 5 y 15 minutos  (Whatsapp medio)</option>
-                            <option value="Entre 15 y 60 minutos (Whatsapp largo)">Entre 15 y 60 minutos  (Whatsapp largo)</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label for="urgenciaContacto" class="block text-sm font-medium text-slate-700 dark:text-slate-300">Urgencia del contacto</label>
-                        <select id="urgenciaContacto" name="urgenciaContacto" required class="mt-1 block w-full px-3 py-2 bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-md shadow-sm focus:outline-none focus:ring-sky-500 focus:border-sky-500 sm:text-sm text-slate-900 dark:text-slate-100">
-                            <option value="">Seleccione una opción...</option>
-                            <option value="Urgente">Urgente</option>
-                            <option value="No urgente">No urgente</option>
-                        </select>
-                    </div>
-
-                    <div>
-                        <button type="submit" class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition duration-150 ease-in-out">
-                            Guardar Llamada
-                        </button>
-                    </div>
+                    <div><label for="quienLlama">¿Quién llama?</label><select id="quienLlama" required class="mt-1 block w-full px-3 py-2 bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-md shadow-sm focus:outline-none focus:ring-sky-500 focus:border-sky-500 sm:text-sm text-slate-900 dark:text-slate-100"><option value="">Seleccione...</option><option value="Concesionario">Concesionario</option><option value="Mecánico de fábrica">Mecánico de fábrica</option><option value="Comercial de fábrica">Comercial de fábrica</option><option value="Cliente">Cliente</option><option value="Otro">Otro</option></select></div>
+                    <div><label for="nombreContacto">Nombre y Apellido de quien realiza el llamado</label><input type="text" id="nombreContacto" required class="mt-1 block w-full px-3 py-2 bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-md shadow-sm focus:outline-none focus:ring-sky-500 focus:border-sky-500 sm:text-sm text-slate-900 dark:text-slate-100"></div>
+                    <div><label for="ofMaquina">OF de la Máquina</label><input type="text" id="ofMaquina" class="mt-1 block w-full px-3 py-2 bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-md shadow-sm focus:outline-none focus:ring-sky-500 focus:border-sky-500 sm:text-sm text-slate-900 dark:text-slate-100"></div>
+                    <div><label for="tipoMaquina">Tipo de Máquina</label><select id="tipoMaquina" required class="mt-1 block w-full px-3 py-2 bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-md shadow-sm focus:outline-none focus:ring-sky-500 focus:border-sky-500 sm:text-sm text-slate-900 dark:text-slate-100"><option value="">Seleccione...</option><option value="Gringa">Gringa</option><option value="Pionera">Pionera</option><option value="Drilor">Drilor</option><option value="Plantor">Plantor</option><option value="Mixia">Mixia</option><option value="Domina">Domina</option></select></div>
+                    <div><label for="nombreClienteFactura">Cliente (Factura)</label><input type="text" id="nombreClienteFactura" class="mt-1 block w-full px-3 py-2 bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-md shadow-sm focus:outline-none focus:ring-sky-500 focus:border-sky-500 sm:text-sm text-slate-900 dark:text-slate-100"></div>
+                    <div><label for="nombreConcesionario">Concesionario</label><select id="nombreConcesionario" required class="mt-1 block w-full px-3 py-2 bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-md shadow-sm focus:outline-none focus:ring-sky-500 focus:border-sky-500 sm:text-sm text-slate-900 dark:text-slate-100"><option value="">Seleccione...</option></select></div>
+                    <div><label for="ubicacionReclamo">Ubicación de la consulta</label><select id="ubicacionReclamo" required class="mt-1 block w-full px-3 py-2 bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-md shadow-sm focus:outline-none focus:ring-sky-500 focus:border-sky-500 sm:text-sm text-slate-900 dark:text-slate-100"><option value="">Seleccione...</option><option value="Accesorios">Accesorios</option><option value="Chasis">Chasis</option><option value="Cuchillas, Discos">Cuchillas, Discos</option><option value="Cuerpo de siembra">Cuerpo de siembra</option><option value="Dosificador de fertilizante">Dosificador de fertilizante</option><option value="Dosificador de semillas">Dosificador de semillas</option><option value="Equipo hidráulico">Equipo hidráulico</option><option value="Lanza">Lanza</option><option value="Leaf">Leaf</option><option value="Mando de siembra y fertilizacion mecánico">Mando mecánico</option><option value="Marcadores">Marcadores</option><option value="Medios de accesos a tolvas">Acceso tolvas</option><option value="Precision Planting">Precision Planting</option><option value="Sistema de aspiración">Aspiración</option><option value="Sistema de sustentación">Sustentación</option><option value="Sistema de transporte semilla - fertilizante">Transporte semilla/fert.</option><option value="Tolvas">Tolvas</option></select></div>
+                    <div><label for="observacionReclamo">Observación (Descripción)</label><textarea id="observacionReclamo" rows="3" required class="mt-1 block w-full px-3 py-2 bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-md shadow-sm focus:outline-none focus:ring-sky-500 focus:border-sky-500 sm:text-sm text-slate-900 dark:text-slate-100"></textarea></div>
+                    <div><label for="motivoRespuesta">Motivo o Respuesta</label><select id="motivoRespuesta" required class="mt-1 block w-full px-3 py-2 bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-md shadow-sm focus:outline-none focus:ring-sky-500 focus:border-sky-500 sm:text-sm text-slate-900 dark:text-slate-100"><option value="">Seleccione...</option><option value="Falla Electronico">Falla Electrónico</option><option value="Falla Hidraulico">Falla Hidráulico</option><option value="Falla Mecánico">Falla Mecánico</option><option value="Asistencia configuración">Asistencia configuración</option><option value="Asistencia regulación">Asistencia regulación</option><option value="Respuesta técnica Electronica">Rta. Téc. Electrónica</option><option value="Respuesta técnica Hidraulica">Rta. Téc. Hidráulica</option><option value="Respuesta técnica Mecánica">Rta. Téc. Mecánica</option></select></div>
+                    <div><label for="canalContacto">Canal de contacto</label><select id="canalContacto" required class="mt-1 block w-full px-3 py-2 bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-md shadow-sm focus:outline-none focus:ring-sky-500 focus:border-sky-500 sm:text-sm text-slate-900 dark:text-slate-100"><option value="">Seleccione...</option><option value="Telefonico">Telefonico</option><option value="WhatsApp">WhatsApp</option></select></div>
+                    <div><label for="duracionContacto">Duración del contacto</label><select id="duracionContacto" required class="mt-1 block w-full px-3 py-2 bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-md shadow-sm focus:outline-none focus:ring-sky-500 focus:border-sky-500 sm:text-sm text-slate-900 dark:text-slate-100"><option value="">Seleccione...</option><option value="<5m (Llamada)"><5m (Llamada)</option><option value="5-10m (Llamada)">5-10m (Llamada)</option><option value="10-20m (Llamada)">10-20m (Llamada)</option><option value="20-35m (Llamada)">20-35m (Llamada)</option><option value="35-60m (Llamada)">35-60m (Llamada)</option><option value=">1h (Llamada)">>1h (Llamada)</option><option value="<5m (WA corto)"><5m (WA corto)</option><option value="5-15m (WA medio)">5-15m (WA medio)</option><option value="15-60m (WA largo)">15-60m (WA largo)</option></select></div>
+                    <div><label for="urgenciaContacto">Urgencia del contacto</label><select id="urgenciaContacto" required class="mt-1 block w-full px-3 py-2 bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-md shadow-sm focus:outline-none focus:ring-sky-500 focus:border-sky-500 sm:text-sm text-slate-900 dark:text-slate-100"><option value="">Seleccione...</option><option value="Urgente">Urgente</option><option value="No urgente">No urgente</option></select></div>
+                    <div><button type="submit" class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">Guardar Llamada</button></div>
                 </form>
             </section>
 
             <section id="historySection" class="hidden bg-slate-50 dark:bg-slate-800 p-6 rounded-xl shadow-xl">
                 <h2 id="historyTitle" class="text-2xl font-semibold mb-6 text-slate-800 dark:text-slate-200">Historial de Llamadas</h2>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-                    <div>
-                        <label for="filterNombre" class="block text-sm font-medium text-slate-700 dark:text-slate-300">Filtrar por Nombre Contacto:</label>
-                        <input type="text" id="filterNombre" class="mt-1 block w-full px-3 py-2 bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-md shadow-sm focus:outline-none focus:ring-sky-500 focus:border-sky-500 sm:text-sm placeholder-slate-400 dark:placeholder-slate-500 text-slate-900 dark:text-slate-100" placeholder="Escriba un nombre...">
-                    </div>
-                    <div>
-                        <label for="filterConcesionario" class="block text-sm font-medium text-slate-700 dark:text-slate-300">Filtrar por Concesionario:</label>
-                        <input type="text" id="filterConcesionario" class="mt-1 block w-full px-3 py-2 bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-md shadow-sm focus:outline-none focus:ring-sky-500 focus:border-sky-500 sm:text-sm placeholder-slate-400 dark:placeholder-slate-500 text-slate-900 dark:text-slate-100" placeholder="Escriba un concesionario...">
-                    </div>
+                    <div><label for="filterNombre" class="block text-sm font-medium text-slate-700 dark:text-slate-300">Filtrar por Nombre Contacto:</label><input type="text" id="filterNombre" class="mt-1 block w-full px-3 py-2 bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-md shadow-sm focus:outline-none focus:ring-sky-500 focus:border-sky-500 sm:text-sm" placeholder="Escriba un nombre..."></div>
+                    <div><label for="filterConcesionario" class="block text-sm font-medium text-slate-700 dark:text-slate-300">Filtrar por Concesionario:</label><input type="text" id="filterConcesionario" class="mt-1 block w-full px-3 py-2 bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-md shadow-sm focus:outline-none focus:ring-sky-500 focus:border-sky-500 sm:text-sm" placeholder="Escriba un concesionario..."></div>
                 </div>
-                <div id="historySpinner" class="spinner-container" style="display: none;">
-                    <div class="spinner"></div>
-                </div>
-                <div id="noHistoryMessage" class="text-center text-slate-500 dark:text-slate-400 py-4" style="display: none;">
-                    No hay llamadas registradas todavía o ninguna coincide con los filtros.
-                </div>
-                <div class="table-responsive">
-                    <table id="historyTable" class="min-w-full divide-y divide-slate-200 dark:divide-slate-700">
-                        <thead id="historyTableHead" class="bg-slate-100 dark:bg-slate-700">
-                            </thead>
-                        <tbody id="historyTableBody" class="bg-white dark:bg-slate-800 divide-y divide-slate-200 dark:divide-slate-700">
-                        </tbody>
-                    </table>
-                </div>
+                <div id="historySpinner" class="spinner-container" style="display: none;"><div class="spinner"></div></div>
+                <div id="noHistoryMessage" class="text-center text-slate-500 dark:text-slate-400 py-4" style="display: none;">No hay llamadas.</div>
+                <div class="table-responsive"><table id="historyTable" class="min-w-full divide-y divide-slate-200 dark:divide-slate-700"><thead id="historyTableHead" class="bg-slate-100 dark:bg-slate-700"></thead><tbody id="historyTableBody" class="bg-white dark:bg-slate-800 divide-y divide-slate-200 dark:divide-slate-700"></tbody></table></div>
             </section>
 
             <section id="kpiSection" class="hidden bg-slate-50 dark:bg-slate-800 p-6 rounded-xl shadow-xl">
                 <h2 id="kpiTitle" class="text-2xl font-semibold mb-6 text-slate-800 dark:text-slate-200 text-center">Indicadores Clave (KPIs)</h2>
-                 <p id="kpiDataStatus" class="text-center text-slate-500 dark:text-slate-400 mb-4" style="display: none;"></p>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-6">
-                    <div>
-                        <h3 class="text-lg font-medium mb-2 text-center text-slate-700 dark:text-slate-300">Llamadas por Nombre de Contacto</h3>
-                        <canvas id="callerNameChart"></canvas>
-                    </div>
-                    <div>
-                        <h3 class="text-lg font-medium mb-2 text-center text-slate-700 dark:text-slate-300">Llamadas por Concesionario</h3>
-                        <canvas id="dealershipChart"></canvas>
-                    </div>
+                <p id="kpiDataStatus" class="text-center text-slate-500 dark:text-slate-400 mb-4" style="display: none;"></p>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
+                    <div><h3 class="text-lg font-medium mb-2 text-center">Llamadas por Contacto</h3><canvas id="callerNameChart"></canvas></div>
+                    <div><h3 class="text-lg font-medium mb-2 text-center">Llamadas por Concesionario</h3><canvas id="dealershipChart"></canvas></div>
+                    <div><h3 class="text-lg font-medium mb-2 text-center">¿Quién Llama?</h3><canvas id="quienLlamaChart"></canvas></div>
+                    <div><h3 class="text-lg font-medium mb-2 text-center">Tipo de Máquina</h3><canvas id="tipoMaquinaChart"></canvas></div>
+                    <div><h3 class="text-lg font-medium mb-2 text-center">Ubicación Consulta</h3><canvas id="ubicacionReclamoChart"></canvas></div>
+                    <div><h3 class="text-lg font-medium mb-2 text-center">Motivo/Respuesta</h3><canvas id="motivoRespuestaChart"></canvas></div>
+                    <div><h3 class="text-lg font-medium mb-2 text-center">Canal de Contacto</h3><canvas id="canalContactoChart"></canvas></div>
+                    <div><h3 class="text-lg font-medium mb-2 text-center">Duración Contacto</h3><canvas id="duracionContactoChart"></canvas></div>
+                    <div><h3 class="text-lg font-medium mb-2 text-center">Urgencia Contacto</h3><canvas id="urgenciaContactoChart"></canvas></div>
                 </div>
             </section>
         </div> </div>
 
-    <div id="messageModal" class="modal"><div class="modal-content"><p id="modalMessage" class="text-lg mb-4"></p><button id="closeModalButton" class="bg-sky-500 hover:bg-sky-600 text-white font-semibold py-2 px-4 rounded-md transition duration-150 ease-in-out">Cerrar</button></div></div>
-    <div id="confirmDeleteModal" class="modal"><div class="modal-content"><p id="confirmDeleteMessage" class="text-lg mb-6"></p><div class="flex justify-center sm:justify-end space-x-3"><button id="cancelDeleteButton" class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded-md transition duration-150 ease-in-out w-full sm:w-auto">Cancelar</button><button id="confirmDeleteActionButton" class="bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded-md transition duration-150 ease-in-out w-full sm:w-auto">Eliminar</button></div></div></div>
-    <div id="exportModal" class="modal"><div class="modal-content"><p class="text-xl font-semibold mb-6">Exportar Historial</p><div id="exportOptions" class="mb-6 text-left"><p class="text-md mb-2">Seleccione el formato:</p><div class="flex items-center mb-2"><input id="exportPDF" type="radio" value="pdf" name="exportFormat" class="w-4 h-4" checked><label for="exportPDF" class="ml-2 text-sm">PDF</label></div><div class="flex items-center"><input id="exportXLSX" type="radio" value="xlsx" name="exportFormat" class="w-4 h-4"><label for="exportXLSX" class="ml-2 text-sm">Excel</label></div></div><div class="flex justify-center sm:justify-end space-x-3"><button id="cancelExportButton" class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded-md w-full sm:w-auto">Cancelar</button><button id="confirmExportButton" class="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-md w-full sm:w-auto">Exportar</button></div></div></div>
-    <div id="historyChoiceModal" class="modal"><div class="modal-content"><p class="text-xl font-semibold mb-6">Ver Historial</p><p class="text-md mb-4">Seleccione tipo:</p><div class="space-y-3"><button id="myHistoryButton" class="w-full bg-sky-500 hover:bg-sky-600 text-white font-semibold py-2 px-4 rounded-md">Mi Historial</button><button id="allHistoryButton" class="w-full bg-teal-500 hover:bg-teal-600 text-white font-semibold py-2 px-4 rounded-md">Historial Completo</button></div><button id="cancelHistoryChoiceButton" class="mt-6 bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded-md w-full sm:w-auto">Cancelar</button></div></div>
+    <div id="messageModal" class="modal"><div class="modal-content"><p id="modalMessage" class="text-lg mb-4"></p><button id="closeModalButton" class="bg-sky-500 hover:bg-sky-600 text-white font-semibold py-2 px-4 rounded-md">Cerrar</button></div></div>
+    <div id="confirmDeleteModal" class="modal"><div class="modal-content"><p id="confirmDeleteMessage" class="text-lg mb-6"></p><div class="flex justify-end space-x-3"><button id="cancelDeleteButton" class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded-md">Cancelar</button><button id="confirmDeleteActionButton" class="bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded-md">Eliminar</button></div></div></div>
+    <div id="exportModal" class="modal"><div class="modal-content"><p class="text-xl font-semibold mb-6">Exportar Historial</p><div id="exportOptions" class="mb-6 text-left"><p class="text-md mb-2">Formato:</p><div class="flex items-center mb-2"><input id="exportPDF" type="radio" value="pdf" name="exportFormat" class="w-4 h-4" checked><label for="exportPDF" class="ml-2 text-sm">PDF</label></div><div class="flex items-center"><input id="exportXLSX" type="radio" value="xlsx" name="exportFormat" class="w-4 h-4"><label for="exportXLSX" class="ml-2 text-sm">Excel</label></div></div><div class="flex justify-end space-x-3"><button id="cancelExportButton" class="bg-gray-300 hover:bg-gray-400 text-gray-800 py-2 px-4 rounded-md">Cancelar</button><button id="confirmExportButton" class="bg-green-600 hover:bg-green-700 text-white py-2 px-4 rounded-md">Exportar</button></div></div></div>
+    <div id="historyChoiceModal" class="modal"><div class="modal-content"><p class="text-xl font-semibold mb-6">Ver Historial</p><p class="text-md mb-4">Seleccione tipo:</p><div class="space-y-3"><button id="myHistoryButton" class="w-full bg-sky-500 hover:bg-sky-600 text-white font-semibold py-2 px-4 rounded-md">Mi Historial</button><button id="allHistoryButton" class="w-full bg-teal-500 hover:bg-teal-600 text-white font-semibold py-2 px-4 rounded-md">Historial Completo</button></div><button id="cancelHistoryChoiceButton" class="mt-6 bg-gray-300 hover:bg-gray-400 text-gray-800 py-2 px-4 rounded-md">Cancelar</button></div></div>
 
     <script type="module">
-        // Importaciones de Firebase
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, collection, addDoc, Timestamp, query, onSnapshot, setLogLevel, doc, deleteDoc, setDoc, getDoc, collectionGroup } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        const firebaseConfig = {
-          apiKey: "AIzaSyBl8f94ZrZ8FtVET67YoxTC2UPG-3v3KoY", 
-          authDomain: "registrollamadas-f0f02.firebaseapp.com", 
-          projectId: "registrollamadas-f0f02", 
-          storageBucket: "registrollamadas-f0f02.firebasestorage.app", 
-          messagingSenderId: "432759947096", 
-          appId: "1:432759947096:web:540c1ecb64f2147829ef2d", 
-          measurementId: "G-XKZ9B29CMY" 
+        const firebaseConfig = { /* TU CONFIGURACIÓN DE FIREBASE AQUÍ */ 
+            apiKey: "AIzaSyBl8f94ZrZ8FtVET67YoxTC2UPG-3v3KoY", 
+            authDomain: "registrollamadas-f0f02.firebaseapp.com", 
+            projectId: "registrollamadas-f0f02", 
+            storageBucket: "registrollamadas-f0f02.firebasestorage.app", 
+            messagingSenderId: "432759947096", 
+            appId: "1:432759947096:web:540c1ecb64f2147829ef2d", 
+            measurementId: "G-XKZ9B29CMY" 
         };
-        console.log("Firebase Config:", firebaseConfig); 
-
         const appIdentifier = 'registrollamadas-f0f02'; 
-
         const fbApp = initializeApp(firebaseConfig); 
         const auth = getAuth(fbApp);
         const db = getFirestore(fbApp);
         setLogLevel('debug'); 
 
-        let currentUserId = null; 
-        let currentUserFullName = ""; 
-        let callsCollectionRef = null; 
-        let unsubscribeHistory = null; 
-        let currentFilteredCalls = []; 
-        let callerNameChartInstance = null; 
-        let dealershipChartInstance = null; 
+        let currentUserId = null, currentUserFullName = ""; 
+        let callsCollectionRef, unsubscribeHistory, currentFilteredCalls = [];
+        let chartInstances = {}; 
 
-        const authSection = document.getElementById('authSection');
-        const registrationSection = document.getElementById('registrationSection');
-        const loginForm = document.getElementById('loginForm');
-        const registrationForm = document.getElementById('registrationForm');
-        const showRegisterLink = document.getElementById('showRegisterLink');
-        const showLoginLink = document.getElementById('showLoginLink');
-        const userNameDisplay = document.getElementById('userNameDisplay');
-        const logoutButton = document.getElementById('logoutButton');
-        
-        const mainAppContent = document.getElementById('mainAppContent');
-        const mainAppButtons = document.getElementById('mainAppButtons'); 
-        const callFormEl = document.getElementById('callForm'); // Renombrado para evitar conflicto con la variable global callForm
-        const viewHistoryChoiceButton = document.getElementById('viewHistoryChoiceButton');
-        const registerNewCallButton = document.getElementById('registerNewCallButton');
-        const viewKpiButton = document.getElementById('viewKpiButton');
-        const backToHistoryButton = document.getElementById('backToHistoryButton');
-
-        const exportHistoryButton = document.getElementById('exportHistoryButton'); 
-        const formSection = document.getElementById('formSection'); 
-        const historySection = document.getElementById('historySection'); 
-        const kpiSection = document.getElementById('kpiSection'); 
-        const kpiTitle = document.getElementById('kpiTitle');
-        const kpiDataStatus = document.getElementById('kpiDataStatus');
-
-        const historyTitle = document.getElementById('historyTitle');
-        const historyTableHead = document.getElementById('historyTableHead'); 
-        const historyTableBody = document.getElementById('historyTableBody');
-        const filterNombreInput = document.getElementById('filterNombre');
-        const filterConcesionarioInput = document.getElementById('filterConcesionario');
-        const historySpinner = document.getElementById('historySpinner');
-        const noHistoryMessage = document.getElementById('noHistoryMessage');
-        const historyTable = document.getElementById('historyTable'); 
-
-        const messageModal = document.getElementById('messageModal');
-        const modalMessage = document.getElementById('modalMessage');
-        const closeModalButton = document.getElementById('closeModalButton');
-        const confirmDeleteModal = document.getElementById('confirmDeleteModal');
-        const confirmDeleteMessage = document.getElementById('confirmDeleteMessage');
-        const cancelDeleteButton = document.getElementById('cancelDeleteButton');
-        const confirmDeleteActionButton = document.getElementById('confirmDeleteActionButton');
+        const concesionarios = ["Agrícola Arrecifes","Agrícola Noroeste","Agrícola Rafaela S.A.","Agro de Souza S.A.","Agro Scheidegger","Agro Sur S.A.C.I.F.I.A.","Agrocomercial Chivilcoy","Agromaq Saladillo S.R.L.","Alonso Maquinarias","Altamirano Oscar A. Maquinaria","Álvarez Maquinarias","Anta Maquinarias S.R.L.","Botto Víctor","Calatroni Javier","Caminiti Caminos","Caon Maquinarias","Castagno y Priotti S.A.S.","Centeno maquinarias","Ciagro","Combes Gabriel","Corporacion de Máquinaria Sa","Cosechar S.A.","Cri - Mag","Criolani","Depetris","Distribuidora Z","Echevarria","El Marrullero","EQ S.A.","Ferrari maquinarias","Frare Hernán","Gondra","Guerrero Carlos","Implementos Quadri SRL","Lanzetti","Litoral Comercial S.A","Luciano Salvador","Luis S Ferro","M.F.M. Rural S.R.L","Maquiagro (Moralejo)","Máquinas del Centro","Maratta maquinarias","Net Multiagro SRL","Pajín maquinarias S.A","Pallotti Diego","Perracino","Perticarini","Pintucci y Gûizzo","Pozzi Maquinarias","Realicó Agrosoluciones (RAS)","Sabbione","Schmidt Mauricio","Silvia Lombardi","Silvio Quevedo","Spitale Osvaldo","Sur Pampa S.A.(Uribe)","Taborro Omar","Tecnomac","Todo Campo (Salum)","Vagliengo Maquinarias","Weinbaur","Wirz Carlos","Zappelli"];
+        const authSection = document.getElementById('authSection'), registrationSection = document.getElementById('registrationSection'), loginForm = document.getElementById('loginForm'), registrationForm = document.getElementById('registrationForm'), showRegisterLink = document.getElementById('showRegisterLink'), showLoginLink = document.getElementById('showLoginLink'), userNameDisplay = document.getElementById('userNameDisplay'), logoutButton = document.getElementById('logoutButton'), mainAppContent = document.getElementById('mainAppContent'), mainAppButtons = document.getElementById('mainAppButtons'), callFormEl = document.getElementById('callForm'), viewHistoryChoiceButton = document.getElementById('viewHistoryChoiceButton'), registerNewCallButton = document.getElementById('registerNewCallButton'), viewKpiButton = document.getElementById('viewKpiButton'), genericBackButton = document.getElementById('genericBackButton'), exportHistoryButton = document.getElementById('exportHistoryButton'), formSection = document.getElementById('formSection'), historySection = document.getElementById('historySection'), kpiSection = document.getElementById('kpiSection'), kpiTitle = document.getElementById('kpiTitle'), kpiDataStatus = document.getElementById('kpiDataStatus'), historyTitle = document.getElementById('historyTitle'), historyTableHead = document.getElementById('historyTableHead'), historyTableBody = document.getElementById('historyTableBody'), filterNombreInput = document.getElementById('filterNombre'), filterConcesionarioInput = document.getElementById('filterConcesionario'), historySpinner = document.getElementById('historySpinner'), noHistoryMessage = document.getElementById('noHistoryMessage'), historyTable = document.getElementById('historyTable'), messageModal = document.getElementById('messageModal'), modalMessage = document.getElementById('modalMessage'), closeModalButton = document.getElementById('closeModalButton'), confirmDeleteModal = document.getElementById('confirmDeleteModal'), confirmDeleteMessage = document.getElementById('confirmDeleteMessage'), cancelDeleteButton = document.getElementById('cancelDeleteButton'), confirmDeleteActionButton = document.getElementById('confirmDeleteActionButton'), exportModal = document.getElementById('exportModal'), cancelExportButton = document.getElementById('cancelExportButton'), confirmExportButton = document.getElementById('confirmExportButton'), historyChoiceModal = document.getElementById('historyChoiceModal'), myHistoryButton = document.getElementById('myHistoryButton'), allHistoryButton = document.getElementById('allHistoryButton'), cancelHistoryChoiceButton = document.getElementById('cancelHistoryChoiceButton');
         let callIdToDelete = null; 
-        const exportModal = document.getElementById('exportModal');
-        const cancelExportButton = document.getElementById('cancelExportButton');
-        const confirmExportButton = document.getElementById('confirmExportButton');
 
-        const historyChoiceModal = document.getElementById('historyChoiceModal');
-        const myHistoryButton = document.getElementById('myHistoryButton');
-        const allHistoryButton = document.getElementById('allHistoryButton');
-        const cancelHistoryChoiceButton = document.getElementById('cancelHistoryChoiceButton');
-
-        const concesionarios = [
-            "Agrícola Arrecifes","Agrícola Noroeste","Agrícola Rafaela S.A.","Agro de Souza S.A.","Agro Scheidegger","Agro Sur S.A.C.I.F.I.A.","Agrocomercial Chivilcoy",
-            "Agromaq Saladillo S.R.L.","Alonso Maquinarias","Altamirano Oscar A. Maquinaria","Álvarez Maquinarias","Anta Maquinarias S.R.L.","Botto Víctor","Calatroni Javier",
-            "Caminiti Caminos","Caon Maquinarias","Castagno y Priotti S.A.S.","Centeno maquinarias","Ciagro","Combes Gabriel","Corporacion de Máquinaria Sa","Cosechar S.A.",
-            "Cri - Mag","Criolani","Depetris","Distribuidora Z","Echevarria","El Marrullero","EQ S.A.","Ferrari maquinarias","Frare Hernán","Gondra","Guerrero Carlos",
-            "Implementos Quadri SRL","Lanzetti","Litoral Comercial S.A","Luciano Salvador","Luis S Ferro","M.F.M. Rural S.R.L","Maquiagro (Moralejo)","Máquinas del Centro",
-            "Maratta maquinarias","Net Multiagro SRL","Pajín maquinarias S.A","Pallotti Diego","Perracino","Perticarini","Pintucci y Gûizzo","Pozzi Maquinarias",
-            "Realicó Agrosoluciones (RAS)","Sabbione","Schmidt Mauricio","Silvia Lombardi","Silvio Quevedo","Spitale Osvaldo","Sur Pampa S.A.(Uribe)","Taborro Omar",
-            "Tecnomac","Todo Campo (Salum)","Vagliengo Maquinarias","Weinbaur","Wirz Carlos","Zappelli"
-        ];
-
-        function populateConcesionariosDropdown() {
-            const select = document.getElementById('nombreConcesionario');
-            concesionarios.forEach(concesionario => {
-                const option = document.createElement('option');
-                option.value = concesionario;
-                option.textContent = concesionario;
-                select.appendChild(option);
-            });
-        }
-
+        function populateConcesionariosDropdown() { const select = document.getElementById('nombreConcesionario'); concesionarios.forEach(c => { const o = document.createElement('option'); o.value = c; o.textContent = c; select.appendChild(o); });}
 
         function updateMainAppButtonVisibility(currentView) { 
-            viewHistoryChoiceButton.classList.toggle('hidden', currentView !== 'form');
-            registerNewCallButton.classList.toggle('hidden', currentView === 'form');
-            exportHistoryButton.classList.toggle('hidden', currentView !== 'history' || currentFilteredCalls.length === 0);
-            viewKpiButton.classList.toggle('hidden', currentView !== 'history' || currentFilteredCalls.length === 0);
-            backToHistoryButton.classList.toggle('hidden', currentView !== 'kpi');
+            viewHistoryChoiceButton.classList.toggle('hidden', currentView !== 'form'); 
+            registerNewCallButton.classList.toggle('hidden', currentView === 'form'); 
+            exportHistoryButton.classList.toggle('hidden', currentView !== 'history' || currentFilteredCalls.length === 0); 
+            viewKpiButton.classList.toggle('hidden', currentView !== 'history' || currentFilteredCalls.length === 0); 
+            genericBackButton.classList.toggle('hidden', currentView === 'form'); // Mostrar botón volver si no estamos en el form principal
         }
 
         function showView(viewName) { 
-            authSection.style.display = viewName === 'login' ? 'block' : 'none';
-            registrationSection.style.display = viewName === 'register' ? 'block' : 'none';
-            mainAppContent.style.display = ['form', 'history', 'kpi'].includes(viewName) ? 'block' : 'none';
+            authSection.style.display = viewName === 'login' ? 'block' : 'none'; 
+            registrationSection.style.display = viewName === 'register' ? 'block' : 'none'; 
+            mainAppContent.style.display = ['form', 'history', 'kpi'].includes(viewName) ? 'block' : 'none'; 
             
-            if (['form', 'history', 'kpi'].includes(viewName)) {
-                formSection.style.display = viewName === 'form' ? 'block' : 'none';
-                historySection.style.display = viewName === 'history' ? 'block' : 'none';
-                kpiSection.style.display = viewName === 'kpi' ? 'block' : 'none';
-                updateMainAppButtonVisibility(viewName);
-            } else {
+            if (['form', 'history', 'kpi'].includes(viewName)) { 
+                formSection.style.display = viewName === 'form' ? 'block' : 'none'; 
+                historySection.style.display = viewName === 'history' ? 'block' : 'none'; 
+                kpiSection.style.display = viewName === 'kpi' ? 'block' : 'none'; 
+                updateMainAppButtonVisibility(viewName); 
+            } else { 
                 updateMainAppButtonVisibility('none'); 
-            }
-
-            if (viewName === 'login') {
-                 userNameDisplay.textContent = 'Por favor, inicie sesión o regístrese.';
-                 logoutButton.classList.add('hidden');
+            } 
+            
+            if (viewName === 'login') { 
+                 userNameDisplay.textContent = 'Por favor, inicie sesión o regístrese.'; 
+                 logoutButton.classList.add('hidden'); 
             } else if (currentUserId) { 
-                logoutButton.classList.remove('hidden');
-            }
+                logoutButton.classList.remove('hidden'); 
+            } 
         }
-
 
         showRegisterLink.addEventListener('click', (e) => { e.preventDefault(); showView('register'); });
         showLoginLink.addEventListener('click', (e) => { e.preventDefault(); showView('login'); });
-
-        registrationForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const nombre = registrationForm.registerNombre.value.trim();
-            const apellido = registrationForm.registerApellido.value.trim();
-            const email = registrationForm.registerEmail.value.trim();
-            const telefono = registrationForm.registerTelefono.value.trim();
-            const password = registrationForm.registerPassword.value;
-
-            if (!nombre || !apellido || !email || !telefono || !password) { showModalMessage("Por favor, complete todos los campos."); return; }
-            if (password.length < 6) { showModalMessage("La contraseña debe tener al menos 6 caracteres."); return; }
-
-            try {
-                const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-                const user = userCredential.user;
-                await setDoc(doc(db, "users", user.uid), { nombre, apellido, email, telefono, createdAt: Timestamp.now() });
-                registrationForm.reset();
-                showModalMessage("¡Registro exitoso! Ahora puede iniciar sesión.");
-                showView('login'); 
-            } catch (error) {
-                if (error.code === 'auth/email-already-in-use') {
-                    showModalMessage("Este correo electrónico ya está en uso. Por favor, intente con otro.");
-                } else { showModalMessage(`Error en el registro: ${error.message}`); }
-                console.error("Error en el registro:", error);
-            }
-        });
-
-        loginForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const email = loginForm.loginEmail.value.trim();
-            const password = loginForm.loginPassword.value;
-            console.log("Intentando iniciar sesión con email:", email); 
-            if (!email || !password) { showModalMessage("Por favor, ingrese correo y contraseña."); return; }
-            try {
-                await signInWithEmailAndPassword(auth, email, password);
-                loginForm.reset();
-            } catch (error) {
-                console.error("Error al iniciar sesión:", error);
-                if (error.code === 'auth/invalid-credential' || error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password' || error.code === 'auth/invalid-email') {
-                    showModalMessage("Correo electrónico o contraseña incorrectos.");
-                } else { showModalMessage(`Error al iniciar sesión: ${error.message}`); }
-            }
-        });
-
+        registrationForm.addEventListener('submit', async (e) => { e.preventDefault(); const n=registrationForm.registerNombre.value.trim(), a=registrationForm.registerApellido.value.trim(), em=registrationForm.registerEmail.value.trim(), t=registrationForm.registerTelefono.value.trim(), p=registrationForm.registerPassword.value; if(!n||!a||!em||!t||!p){showModalMessage("Complete todos los campos.");return;} if(p.length<6){showModalMessage("Contraseña: mín. 6 caracteres.");return;} try { const uc=await createUserWithEmailAndPassword(auth,em,p); await setDoc(doc(db,"users",uc.user.uid),{nombre:n,apellido:a,email:em,telefono:t,createdAt:Timestamp.now()}); registrationForm.reset(); showModalMessage("¡Registro exitoso!"); showView('login'); } catch (err) { if(err.code==='auth/email-already-in-use')showModalMessage("Email ya en uso."); else showModalMessage(`Error: ${err.message}`); console.error(err); }});
+        loginForm.addEventListener('submit', async (e) => { e.preventDefault(); const em=loginForm.loginEmail.value.trim(), p=loginForm.loginPassword.value; console.log("Login con email:", em); if(!em||!p){showModalMessage("Ingrese email y contraseña.");return;} try { await signInWithEmailAndPassword(auth,em,p); loginForm.reset(); } catch (err) { console.error(err); if(err.code==='auth/invalid-credential'||err.code==='auth/user-not-found'||err.code==='auth/wrong-password'||err.code==='auth/invalid-email')showModalMessage("Credenciales incorrectas."); else showModalMessage(`Error: ${err.message}`); }});
         logoutButton.addEventListener('click', async () => { try { await signOut(auth); } catch (e) { showModalMessage(`Error: ${e.message}`); } });
 
         onAuthStateChanged(auth, async (user) => {
             if (user) {
                 currentUserId = user.uid;
                 const userProfileRef = doc(db, "users", currentUserId);
-                try {
-                    const docSnap = await getDoc(userProfileRef);
-                    if (docSnap.exists()) {
-                        const ud = docSnap.data();
-                        currentUserFullName = `${ud.nombre} ${ud.apellido}`; 
-                        userNameDisplay.textContent = `Bienvenido/a, ${currentUserFullName}`;
-                    } else { currentUserFullName = "Usuario Desconocido"; userNameDisplay.textContent = `Bienvenido/a`; }
-                } catch (e) { currentUserFullName = "Usuario (Error)"; userNameDisplay.textContent = `Bienvenido/a`; }
+                try { const dS = await getDoc(userProfileRef); if (dS.exists()){ const uD=dS.data(); currentUserFullName=`${uD.nombre} ${uD.apellido}`; userNameDisplay.textContent=`Bienvenido/a, ${currentUserFullName}`; } else { currentUserFullName="Usuario Desconocido"; userNameDisplay.textContent=`Bienvenido/a`;}} catch (e){ currentUserFullName="Usuario (Error)"; userNameDisplay.textContent=`Bienvenido/a`;}
                 showView('form'); 
-            } else { 
-                currentUserId = null; currentUserFullName = "";
-                showView('login'); 
-                clearHistoryTable();
-                if (unsubscribeHistory) unsubscribeHistory(); unsubscribeHistory = null;
-                currentFilteredCalls = []; 
-            }
+            } else { currentUserId=null; currentUserFullName=""; showView('login'); clearHistoryTable(); if(unsubscribeHistory)unsubscribeHistory(); unsubscribeHistory=null; currentFilteredCalls=[]; Object.values(chartInstances).forEach(cI => cI?.destroy()); chartInstances={}; }
         });
 
-        function showModalMessage(message) { modalMessage.textContent = message; messageModal.style.display = "block"; }
-        closeModalButton.addEventListener('click', () => { messageModal.style.display = "none"; });
-        function openConfirmDeleteModal(id, nombre, apellido) { callIdToDelete = id; confirmDeleteMessage.textContent = `Eliminar llamada de "${nombre} ${apellido}"?`; confirmDeleteModal.style.display = "block"; }
-        cancelDeleteButton.addEventListener('click', () => { confirmDeleteModal.style.display = "none"; callIdToDelete = null; });
-        confirmDeleteActionButton.addEventListener('click', async () => { if (callIdToDelete) await deleteCallFromDb(callIdToDelete); confirmDeleteModal.style.display = "none"; callIdToDelete = null; });
-        exportHistoryButton.addEventListener('click', () => { if (currentFilteredCalls.length === 0) { showModalMessage("No hay datos para exportar."); return; } exportModal.style.display = "block"; });
-        cancelExportButton.addEventListener('click', () => { exportModal.style.display = "none"; });
-        confirmExportButton.addEventListener('click', () => {
-            const format = document.querySelector('input[name="exportFormat"]:checked').value;
-            const isAllHistoryView = historyTitle.textContent.includes("Completo");
-            if (format === 'pdf') exportToPDF(currentFilteredCalls, isAllHistoryView);
-            else if (format === 'xlsx') exportToXLSX(currentFilteredCalls, isAllHistoryView);
-            exportModal.style.display = "none";
-        });
-        window.addEventListener('click', (event) => { if (event.target == messageModal) messageModal.style.display = "none"; if (event.target == confirmDeleteModal) { confirmDeleteModal.style.display = "none"; callIdToDelete = null; } if (event.target == exportModal) exportModal.style.display = "none"; if (event.target == historyChoiceModal) historyChoiceModal.style.display = "none"; });
+        function showModalMessage(msg) { modalMessage.textContent=msg; messageModal.style.display="block"; }
+        closeModalButton.addEventListener('click', () => messageModal.style.display = "none");
+        function openConfirmDeleteModal(id,n,a){ callIdToDelete=id; confirmDeleteMessage.textContent=`Eliminar llamada de "${n} ${a}"?`; confirmDeleteModal.style.display="block"; }
+        cancelDeleteButton.addEventListener('click', ()=>{confirmDeleteModal.style.display="none";callIdToDelete=null;});
+        confirmDeleteActionButton.addEventListener('click', async ()=>{if(callIdToDelete)await deleteCallFromDb(callIdToDelete);confirmDeleteModal.style.display="none";callIdToDelete=null;});
+        exportHistoryButton.addEventListener('click', ()=>{if(currentFilteredCalls.length===0){showModalMessage("No hay datos para exportar.");return;}exportModal.style.display="block";});
+        cancelExportButton.addEventListener('click', ()=>exportModal.style.display="none");
+        confirmExportButton.addEventListener('click', ()=>{ const fmt=document.querySelector('input[name="exportFormat"]:checked').value; const allH=historyTitle.textContent.includes("Completo"); if(fmt==='pdf')exportToPDF(currentFilteredCalls,allH); else if(fmt==='xlsx')exportToXLSX(currentFilteredCalls,allH); exportModal.style.display="none"; });
+        window.addEventListener('click', (evt)=>{ if(evt.target==messageModal)messageModal.style.display="none"; if(evt.target==confirmDeleteModal){confirmDeleteModal.style.display="none";callIdToDelete=null;} if(evt.target==exportModal)exportModal.style.display="none"; if(evt.target==historyChoiceModal)historyChoiceModal.style.display="none"; });
 
-        async function deleteCallFromDb(id) {
-            if (!currentUserId) { showModalMessage("Error: Usuario no autenticado."); return; }
-            try {
-                await deleteDoc(doc(db, `artifacts/${appIdentifier}/users/${currentUserId}/calls/${id}`));
-                showModalMessage("Llamada eliminada.");
-            } catch (e) { showModalMessage(`Error: ${e.message}`); }
-        }
-
-        callFormEl.addEventListener('submit', async (e) => { // Usar callFormEl
+        async function deleteCallFromDb(id){ if(!currentUserId){showModalMessage("Error: Usuario no autenticado.");return;} try { await deleteDoc(doc(db,`artifacts/${appIdentifier}/users/${currentUserId}/calls/${id}`)); showModalMessage("Llamada eliminada."); } catch(e){showModalMessage(`Error: ${e.message}`);}}
+        
+        callFormEl.addEventListener('submit', async (e) => {
             e.preventDefault();
             if (!currentUserId) { showModalMessage("Error: Usuario no autenticado."); return; }
-            const currentCallsCollectionRef = collection(db, `artifacts/${appIdentifier}/users/${currentUserId}/calls`);
+            const ccr = collection(db, `artifacts/${appIdentifier}/users/${currentUserId}/calls`);
             const callData = {
-                quienLlama: callFormEl.quienLlama.value,
-                nombreContacto: callFormEl.nombreContacto.value.trim(),
-                ofMaquina: callFormEl.ofMaquina.value.trim(),
-                tipoMaquina: callFormEl.tipoMaquina.value,
-                nombreClienteFactura: callFormEl.nombreClienteFactura.value.trim(),
-                nombreConcesionario: callFormEl.nombreConcesionario.value,
-                ubicacionReclamo: callFormEl.ubicacionReclamo.value,
-                observacionReclamo: callFormEl.observacionReclamo.value.trim(),
-                motivoRespuesta: callFormEl.motivoRespuesta.value,
-                canalContacto: callFormEl.canalContacto.value,
-                duracionContacto: callFormEl.duracionContacto.value,
-                urgenciaContacto: callFormEl.urgenciaContacto.value,
-                timestamp: Timestamp.now(),
-                userId: currentUserId, 
-                registradoPor: currentUserFullName 
+                quienLlama: callFormEl.quienLlama.value, nombreContacto: callFormEl.nombreContacto.value.trim(), ofMaquina: callFormEl.ofMaquina.value.trim(), tipoMaquina: callFormEl.tipoMaquina.value, nombreClienteFactura: callFormEl.nombreClienteFactura.value.trim(), nombreConcesionario: callFormEl.nombreConcesionario.value, ubicacionReclamo: callFormEl.ubicacionReclamo.value, observacionReclamo: callFormEl.observacionReclamo.value.trim(), motivoRespuesta: callFormEl.motivoRespuesta.value, canalContacto: callFormEl.canalContacto.value, duracionContacto: callFormEl.duracionContacto.value, urgenciaContacto: callFormEl.urgenciaContacto.value,
+                timestamp: Timestamp.now(), userId: currentUserId, registradoPor: currentUserFullName 
             };
-            if (!callData.quienLlama || !callData.nombreContacto || !callData.tipoMaquina || !callData.nombreConcesionario || !callData.ubicacionReclamo || !callData.observacionReclamo || !callData.motivoRespuesta || !callData.canalContacto || !callData.duracionContacto || !callData.urgenciaContacto) {
-                showModalMessage("Por favor, complete todos los campos obligatorios del formulario.");
-                return;
+            if (Object.values(callData).some(v => v === "" && typeof v === 'string' && v !== callData.ofMaquina && v !== callData.nombreClienteFactura )) { 
+                 if (!callData.quienLlama || !callData.nombreContacto || !callData.tipoMaquina || !callData.nombreConcesionario || !callData.ubicacionReclamo || !callData.observacionReclamo || !callData.motivoRespuesta || !callData.canalContacto || !callData.duracionContacto || !callData.urgenciaContacto) {
+                    showModalMessage("Complete todos los campos obligatorios."); return;
+                 }
             }
-            try {
-                await addDoc(currentCallsCollectionRef, callData);
-                showModalMessage("Llamada registrada exitosamente!");
-                callFormEl.reset(); // Usar callFormEl
-            } catch (error) { showModalMessage(`Error: ${error.message}`); }
+            try { await addDoc(ccr, callData); showModalMessage("Llamada registrada!"); callFormEl.reset(); } catch (err) { showModalMessage(`Error: ${err.message}`); }
         });
 
         function loadHistory(fetchAllUsers = false) {
@@ -553,7 +259,7 @@
             historyTableHead.innerHTML = ''; historyTableBody.innerHTML = ''; 
             const hr = historyTableHead.insertRow();
             const baseH = ["Fecha", "Contacto", "Tipo Máquina", "Concesionario", "Observación"];
-            if (fetchAllUsers) baseH.push("Registrado por");
+            if (fetchAllUsers) baseH.splice(1,0,"Registrado por"); 
             baseH.push("Acciones");
             baseH.forEach(txt => { const th = document.createElement('th'); th.className = "px-4 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-300 uppercase tracking-wider"; th.textContent = txt; hr.appendChild(th); });
 
@@ -563,13 +269,27 @@
                 calls.forEach(call => {
                     const row = historyTableBody.insertRow(); row.className = "hover:bg-slate-100 dark:hover:bg-slate-700";
                     const date = call.timestamp.toDate();
-                    const fDate = `${date.getDate()}/${date.getMonth()+1}/${date.getFullYear()} ${date.getHours()}:${String(date.getMinutes()).padStart(2,'0')}`;
-                    const fieldsToShow = [fDate, call.nombreContacto, call.tipoMaquina, call.nombreConcesionario, call.observacionReclamo ? call.observacionReclamo.substring(0,30)+'...' : 'N/A'];
-                    if (fetchAllUsers) fieldsToShow.push(call.registradoPor || 'N/A');
-                    fieldsToShow.forEach(f => { const cell = row.insertCell(); cell.textContent = f; cell.className = "px-4 py-3 text-sm text-slate-700 dark:text-slate-300"; });
-                    if (call.observacionReclamo) row.cells[4].title = call.observacionReclamo;
+                    const fDate = `${date.getDate().toString().padStart(2,'0')}/${(date.getMonth()+1).toString().padStart(2,'0')}/${date.getFullYear()} ${date.getHours().toString().padStart(2,'0')}:${String(date.getMinutes()).padStart(2,'0')}`;
+                    
+                    let cellIndex = 0;
+                    const addCell = (text, title = null) => {
+                        const cell = row.insertCell(cellIndex++);
+                        cell.textContent = text;
+                        cell.className = "px-4 py-3 text-sm text-slate-700 dark:text-slate-300 whitespace-nowrap";
+                        if (title) cell.title = title;
+                        if (text && text.length > 30 && cellIndex < baseH.length -1) { 
+                             cell.classList.add("max-w-xs", "overflow-hidden", "overflow-ellipsis");
+                        }
+                    };
 
-                    const actCell = row.insertCell(); actCell.className = "px-4 py-3 text-sm text-center";
+                    addCell(fDate);
+                    if (fetchAllUsers) addCell(call.registradoPor || 'N/A');
+                    addCell(call.nombreContacto);
+                    addCell(call.tipoMaquina);
+                    addCell(call.nombreConcesionario);
+                    addCell(call.observacionReclamo ? call.observacionReclamo.substring(0,30)+(call.observacionReclamo.length > 30 ? '...' : '') : 'N/A', call.observacionReclamo);
+                    
+                    const actCell = row.insertCell(cellIndex); actCell.className = "px-4 py-3 text-sm text-center";
                     if (call.userId === currentUserId) { 
                         const btn = document.createElement('button'); btn.className = "delete-button text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300";
                         btn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5"><path fill-rule="evenodd" d="M8.75 1A2.75 2.75 0 006 3.75v.443c-.795.077-1.58.176-2.365.298a.75.75 0 10.23 1.482l.149-.022.841 10.518A2.75 2.75 0 007.596 19h4.807a2.75 2.75 0 002.742-2.53l.841-10.52.149.023a.75.75 0 00.23-1.482A41.03 41.03 0 0014 4.193V3.75A2.75 2.75 0 0011.25 1h-2.5zM10 4c.84 0 1.673.025 2.5.075V3.75c0-.69-.56-1.25-1.25-1.25h-2.5c-.69 0-1.25.56-1.25 1.25V4c.827-.05 1.66-.075 2.5-.075zM8.47 9.12a.75.75 0 011.06 0l1.25 1.25a.75.75 0 01-1.06 1.06L10 10.81l-.72.72a.75.75 0 01-1.06-1.06l1.25-1.25zM11.53 9.12a.75.75 0 010 1.06l-1.25 1.25a.75.75 0 01-1.06-1.06l.72-.72 1.25-1.25a.75.75 0 011.06 0z" clip-rule="evenodd" /></svg>`;
@@ -583,53 +303,69 @@
         function clearHistoryTable() { historyTableBody.innerHTML = ''; historyTableHead.innerHTML = ''; noHistoryMessage.textContent = "No hay llamadas."; noHistoryMessage.style.display = "block"; if(historyTable) historyTable.classList.add('hidden'); exportHistoryButton.classList.add('hidden'); viewKpiButton.classList.add('hidden'); currentFilteredCalls = []; }
         filterNombreInput.addEventListener('input', () => loadHistory(historyTitle.textContent.includes("Completo")));
         filterConcesionarioInput.addEventListener('input', () => loadHistory(historyTitle.textContent.includes("Completo")));
+        
         viewHistoryChoiceButton.addEventListener('click', () => { historyChoiceModal.style.display = "block"; });
         cancelHistoryChoiceButton.addEventListener('click', () => { historyChoiceModal.style.display = "none"; });
         myHistoryButton.addEventListener('click', () => { historyChoiceModal.style.display = "none"; showView('history'); loadHistory(false); });
         allHistoryButton.addEventListener('click', () => { historyChoiceModal.style.display = "none"; showView('history'); loadHistory(true); });
         registerNewCallButton.addEventListener('click', () => { showView('form'); if (unsubscribeHistory) { unsubscribeHistory(); unsubscribeHistory = null; } clearHistoryTable(); });
+        
+        genericBackButton.addEventListener('click', () => {
+            if (kpiSection.style.display === 'block') {
+                showView('history');
+                loadHistory(historyTitle.textContent.includes("Completo")); // Recargar historial actual
+            } else if (historySection.style.display === 'block') {
+                showView('form');
+                if (unsubscribeHistory) { unsubscribeHistory(); unsubscribeHistory = null; }
+                clearHistoryTable();
+            }
+        });
+
         viewKpiButton.addEventListener('click', () => { if (currentFilteredCalls.length === 0) { showModalMessage("No hay datos para KPIs."); return; } kpiTitle.textContent = `KPIs - ${historyTitle.textContent}`; showView('kpi'); generateAndRenderKPIs(); });
-        backToHistoryButton.addEventListener('click', () => { showView('history'); loadHistory(historyTitle.textContent.includes("Completo")); });
         
         function exportToPDF(data, isAllHistory) {
             const { jsPDF } = window.jspdf; const doc = new jsPDF({ orientation: isAllHistory ? 'l' : 'p' });
             const cols = ["Fecha", "Contacto", "OF Máquina", "Tipo Máquina", "Cliente Factura", "Concesionario", "Ubicación Reclamo", "Observación", "Motivo/Respuesta", "Canal", "Duración", "Urgencia"];
-            if (isAllHistory) cols.push("Registrado por");
-            const rows = data.map(c => { const d = c.timestamp.toDate(); const fD = `${d.getDate()}/${d.getMonth()+1}/${d.getFullYear()} ${d.getHours()}:${String(d.getMinutes()).padStart(2,'0')}`; const r = [fD, c.nombreContacto, c.ofMaquina, c.tipoMaquina, c.nombreClienteFactura, c.nombreConcesionario, c.ubicacionReclamo, c.observacionReclamo, c.motivoRespuesta, c.canalContacto, c.duracionContacto, c.urgenciaContacto]; if (isAllHistory) r.push(c.registradoPor || 'N/A'); return r; });
-            doc.autoTable({ head: [cols], body: rows, startY: 20, theme: 'grid', styles: { fontSize: 7 }, headStyles: { fillColor: [22,160,133] } });
+            if (isAllHistory) cols.splice(1,0,"Registrado por"); 
+            const rows = data.map(c => { const d = c.timestamp.toDate(); const fD = `${d.getDate()}/${d.getMonth()+1}/${d.getFullYear()} ${d.getHours()}:${String(d.getMinutes()).padStart(2,'0')}`; const r = [fD]; if(isAllHistory) r.push(c.registradoPor||'N/A'); r.push(c.nombreContacto, c.ofMaquina, c.tipoMaquina, c.nombreClienteFactura, c.nombreConcesionario, c.ubicacionReclamo, c.observacionReclamo, c.motivoRespuesta, c.canalContacto, c.duracionContacto, c.urgenciaContacto); return r; });
+            doc.autoTable({ head: [cols], body: rows, startY: 20, theme: 'grid', styles: { fontSize: isAllHistory ? 6 : 7, cellPadding: 1.5 }, headStyles: { fillColor: [22,160,133], fontSize: 7 }, columnStyles: {0:{cellWidth:18}, 1:{cellWidth: isAllHistory?20:20} } });
             doc.text(historyTitle.textContent || "Historial", 14, 15); doc.save("historial.pdf"); showModalMessage("Exportado a PDF.");
         }
         function exportToXLSX(data, isAllHistory) {
             const hdr = ["Fecha", "Contacto", "OF Máquina", "Tipo Máquina", "Cliente Factura", "Concesionario", "Ubicación Reclamo", "Observación", "Motivo/Respuesta", "Canal", "Duración", "Urgencia"];
-            if (isAllHistory) hdr.push("Registrado por");
+            if (isAllHistory) hdr.splice(1,0,"Registrado por");
             const wsData = [hdr];
-            data.forEach(c => { const d = c.timestamp.toDate(); const fD = `${d.getDate()}/${d.getMonth()+1}/${d.getFullYear()} ${d.getHours()}:${String(d.getMinutes()).padStart(2,'0')}`; const r = [fD, c.nombreContacto, c.ofMaquina, c.tipoMaquina, c.nombreClienteFactura, c.nombreConcesionario, c.ubicacionReclamo, c.observacionReclamo, c.motivoRespuesta, c.canalContacto, c.duracionContacto, c.urgenciaContacto]; if (isAllHistory) r.push(c.registradoPor || 'N/A'); wsData.push(r); });
+            data.forEach(c => { const d = c.timestamp.toDate(); const fD = `${d.getDate()}/${d.getMonth()+1}/${d.getFullYear()} ${d.getHours()}:${String(d.getMinutes()).padStart(2,'0')}`; const r = [fD]; if(isAllHistory) r.push(c.registradoPor||'N/A'); r.push(c.nombreContacto, c.ofMaquina, c.tipoMaquina, c.nombreClienteFactura, c.nombreConcesionario, c.ubicacionReclamo, c.observacionReclamo, c.motivoRespuesta, c.canalContacto, c.duracionContacto, c.urgenciaContacto); wsData.push(r); });
             const ws = XLSX.utils.aoa_to_sheet(wsData); const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, "Historial");
-            const colW = [{wch:18},{wch:25},{wch:15},{wch:15},{wch:25},{wch:25},{wch:25},{wch:40},{wch:30},{wch:12},{wch:30},{wch:10}]; if (isAllHistory) colW.push({wch:25}); ws['!cols'] = colW;
+            const colW = [{wch:18}]; if(isAllHistory) colW.push({wch:25}); colW.push({wch:25},{wch:15},{wch:15},{wch:25},{wch:25},{wch:25},{wch:40},{wch:30},{wch:12},{wch:30},{wch:10}); ws['!cols'] = colW;
             XLSX.writeFile(wb, "historial.xlsx"); showModalMessage("Exportado a XLSX.");
         }
 
-        function processDataForPieChart(calls, fieldName, nameCombiner = null) {
-            const counts = {};
-            calls.forEach(call => { let key; if (nameCombiner) key = nameCombiner(call); else key = call[fieldName] || "No especificado"; counts[key] = (counts[key] || 0) + 1; });
-            return { labels: Object.keys(counts), data: Object.values(counts) };
-        }
-        function getRandomColor() { const r = Math.floor(Math.random()*220); const g = Math.floor(Math.random()*220); const b = Math.floor(Math.random()*220); return `rgba(${r},${g},${b},0.7)`; }
-        function renderPieChart(canvasId, chartInstance, chartData, chartLabel) {
+        function processDataForPieChart(calls, fieldName, nameCombiner = null) { const counts = {}; calls.forEach(call => { let key; if (nameCombiner) key = nameCombiner(call); else key = call[fieldName] || "No especificado"; counts[key] = (counts[key] || 0) + 1; }); return { labels: Object.keys(counts), data: Object.values(counts) }; }
+        function getRandomColor() { const r = Math.floor(Math.random()*200)+25; const g = Math.floor(Math.random()*200)+25; const b = Math.floor(Math.random()*200)+25; return `rgba(${r},${g},${b},0.7)`; } 
+        
+        function renderPieChart(canvasId, chartData, chartLabel) {
             const ctx = document.getElementById(canvasId).getContext('2d');
-            if (chartInstance) chartInstance.destroy(); 
+            if (chartInstances[canvasId]) chartInstances[canvasId].destroy(); 
             if (chartData.labels.length === 0) { document.getElementById(canvasId).style.display = 'none'; return null; }
             document.getElementById(canvasId).style.display = 'block';
             const bgColors = chartData.labels.map(() => getRandomColor());
-            return new Chart(ctx, { type: 'pie', data: { labels: chartData.labels, datasets: [{ label: chartLabel, data: chartData.data, backgroundColor: bgColors, borderColor: bgColors.map(c => c.replace('0.7','1')), borderWidth: 1 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'top' }, tooltip: { callbacks: { label: function(c){ let l = c.label||''; if(l)l+=': '; if(c.parsed!==null)l+=c.parsed; return l; } } } } } });
+            chartInstances[canvasId] = new Chart(ctx, { type: 'pie', data: { labels: chartData.labels, datasets: [{ label: chartLabel, data: chartData.data, backgroundColor: bgColors, borderColor: bgColors.map(c => c.replace('0.7','1')), borderWidth: 1 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'top' }, tooltip: { callbacks: { label: function(c){ let l = c.label||''; if(l)l+=': '; if(c.parsed!==null)l+=c.parsed; return l; } } } } } });
         }
+
         function generateAndRenderKPIs() {
-            if (currentFilteredCalls.length === 0) { kpiDataStatus.textContent = "No hay datos para KPIs."; kpiDataStatus.style.display = "block"; if(callerNameChartInstance) callerNameChartInstance.destroy(); if(dealershipChartInstance) dealershipChartInstance.destroy(); document.getElementById('callerNameChart').style.display = 'none'; document.getElementById('dealershipChart').style.display = 'none'; return; }
+            if (currentFilteredCalls.length === 0) { kpiDataStatus.textContent = "No hay datos para mostrar en los KPIs."; kpiDataStatus.style.display = "block"; Object.values(chartInstances).forEach(cI => cI?.destroy()); chartInstances={}; document.querySelectorAll('#kpiSection canvas').forEach(c => c.style.display = 'none'); return; }
             kpiDataStatus.style.display = "none";
-            const callerNameData = processDataForPieChart(currentFilteredCalls, null, call => call.nombreContacto || "No especificado");
-            callerNameChartInstance = renderPieChart('callerNameChart', callerNameChartInstance, callerNameData, 'Llamadas por Contacto');
-            const dealershipData = processDataForPieChart(currentFilteredCalls, 'nombreConcesionario');
-            dealershipChartInstance = renderPieChart('dealershipChart', dealershipChartInstance, dealershipData, 'Llamadas por Concesionario');
+            
+            renderPieChart('callerNameChart', processDataForPieChart(currentFilteredCalls, null, call => call.nombreContacto || "No especificado"), 'Llamadas por Contacto');
+            renderPieChart('dealershipChart', processDataForPieChart(currentFilteredCalls, 'nombreConcesionario'), 'Llamadas por Concesionario');
+            renderPieChart('quienLlamaChart', processDataForPieChart(currentFilteredCalls, 'quienLlama'), '¿Quién Llama?');
+            renderPieChart('tipoMaquinaChart', processDataForPieChart(currentFilteredCalls, 'tipoMaquina'), 'Tipo de Máquina');
+            renderPieChart('ubicacionReclamoChart', processDataForPieChart(currentFilteredCalls, 'ubicacionReclamo'), 'Ubicación Consulta');
+            renderPieChart('motivoRespuestaChart', processDataForPieChart(currentFilteredCalls, 'motivoRespuesta'), 'Motivo/Respuesta');
+            renderPieChart('canalContactoChart', processDataForPieChart(currentFilteredCalls, 'canalContacto'), 'Canal de Contacto');
+            renderPieChart('duracionContactoChart', processDataForPieChart(currentFilteredCalls, 'duracionContacto'), 'Duración Contacto');
+            renderPieChart('urgenciaContactoChart', processDataForPieChart(currentFilteredCalls, 'urgenciaContacto'), 'Urgencia Contacto');
         }
 
         document.addEventListener('DOMContentLoaded', () => {
